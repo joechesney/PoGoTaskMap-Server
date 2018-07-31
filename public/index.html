@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>NashQuestMap</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+	<!-- <link rel="stylesheet" type="text/css" href="stylesheet_responsive.css"> -->
+
+	<link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
+	<script src="./node_modules/leaflet/dist/leaflet.js"></script>
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 95%;
+			width: 100vw;
+		}
+	</style>
+
+	<!-- <SCRIPT language="Javascript" type="text/javascript">
+	function doSubmit( event , FocusObject) {
+		var keyCode2 = (window.Event) ? event.which : event.keyCode;
+		var keyCode1 = (window.Event) ? event.keyCode : event.which;
+		if( keyCode1 == 13 || keyCode2 == 13 ) { WriteText(FocusObject); return false; }
+	}
+	</SCRIPT> -->
+
+</head>
+<body>
+
+<div id='map'></div>
+
+<script src=''></script>
+<script type="module">
+	import { secrets } from '../secrets'
+	var greenEgg = L.icon({
+		iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
+		shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
+
+		iconSize:      [36, 41], // size of the icon
+		shadowSize:    [41, 41], // size of the shadow
+		iconAnchor:    [18, 41], // point of the icon which will correspond to marker's location
+		shadowAnchor:  [18, 41], // the same for the shadow
+		popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
+		tooltipAnchor: [10, -20]
+	});
+
+		var redEgg = L.icon({
+		iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
+		shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
+
+		iconSize:      [25, 41], // size of the icon
+		shadowSize:    [41, 41], // size of the shadow
+		iconAnchor:    [12, 41], // point of the icon which will correspond to marker's location
+		shadowAnchor:  [18, 41], // the same for the shadow
+		popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
+		tooltipAnchor: [10, -20]
+	});
+
+	var Regular = L.layerGroup();
+	// <?php echo $StopMarkers_Regular; ?>
+	L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Regular);
+
+	var Active = L.layerGroup();
+	// <?php echo $StopMarkers_Active; ?>
+	L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Active);
+
+
+	var mbAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+		mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoiam9lZGloIiwiYSI6ImNqanNzaGVyZTFhbmIzcW1hOWVya25uemsifQ.QhKEnOJanad8c-KyJQDG2A';
+
+	var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
+		streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
+
+	var map = L.map('map', {
+		center: [36.1497012,-86.8144697],
+		zoom: 15,
+		layers: [streets, Active, Regular]
+	});
+
+	var baseLayers = {
+		"Grayscale": grayscale,
+		"Streets": streets
+	};
+
+	var overlays = {
+		"Active Study": Active,
+		"Inactive": Regular
+	};
+	map.on('click', (e)=>{
+		console.log(`${e.latlng.lat}`);
+		console.log(`${e.latlng.lng}`);
+		console.log(`________________`);
+	})
+	L.control.layers(baseLayers, overlays).addTo(map);
+	// L.marker([36.150249,-86.8128233]).addTo(Active);
+	// L.marker([36.149596, -86.811927]).addTo(Regular);
+</script>
+<script>
+	const pokestops = [
+		{latitude: 36.150400123879905, longitude: -86.81216620062756, name: "Centennial Exposition Plaque", id: 1},
+		{latitude: 36.149618, longitude: -86.812215, name: "Butterfly Planter", id: 2},
+		{latitude: 36.149596, longitude: -86.811927, name: "Lizard Planter", id: 3},
+		{latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4},
+	];
+	pokestops.forEach(pokestop => {
+		L.marker([pokestop.latitude, pokestop.longitude])
+		.bindPopup(pokestop.name)
+		.addTo(Regular);
+	});
+</script>
+<FORM NAME="form" action="index.php" method="post">
+	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0">
+	<TR><TD VALIGN="MIDDLE">
+		<B style="font-size:12pt; font-family:arial,times;">
+
+		SEARCH:
+		<INPUT TYPE="text" SIZE="35" NAME="SearchField" VALUE="<?php echo $SearchField;?>" OnChange="WriteText('Line04');" onkeypress="return doSubmit(event,'Line04');">
+
+		</B><BR>( e.g. rare|stardust|tangela )
+	</TD></TR></TABLE>
+</FORM>
+
+</body>
+</html>
