@@ -14,6 +14,7 @@
 
 	<link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
 	<script src="./node_modules/leaflet/dist/leaflet.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.3.1/firebase.js"></script>
 
 	<style>
 		body {
@@ -41,9 +42,9 @@
 
 
 <script type="module">
+
 	import  { secrets } from '/secrets.js';
-	console.log('secrets: ',secrets);
-	console.log('secrets: ',secrets.mapbox_API_key);
+	firebase.initializeApp(secrets.config);
 	const greenEgg = L.icon({
 		iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
 		shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
@@ -101,7 +102,7 @@
 	map.on('click', (e)=>{
 		console.log(`${e.latlng.lat}`);
 		console.log(`${e.latlng.lng}`);
-		console.log(`________________`);
+		console.log(`-----------`);
 	})
 	L.control.layers(baseLayers, overlays).addTo(map);
 	// L.marker([36.150249,-86.8128233]).addTo(Active);
