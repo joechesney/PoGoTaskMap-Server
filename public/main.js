@@ -22,25 +22,19 @@ firebase.initializeApp(secrets.config);
 
 const greenEgg = L.icon({
   iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
-  shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
 
-  iconSize:      [36, 41], // size of the icon
-  shadowSize:    [41, 41], // size of the shadow
+  iconSize:      [21, 35], // size of the icon
   iconAnchor:    [18, 41], // point of the icon which will correspond to marker's location
-  shadowAnchor:  [18, 41], // the same for the shadow
-  popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
+  popupAnchor:   [-7, -40],  // point from which the popup should open relative to the iconAnchor
   tooltipAnchor: [10, -20]
 });
 
 const redEgg = L.icon({
   iconUrl: './images/red-pin.png',
-  shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
 
-  iconSize:      [25, 41], // size of the icon
-  shadowSize:    [41, 41], // size of the shadow
-  iconAnchor:    [12, 41], // point of the icon which will correspond to marker's location
-  shadowAnchor:  [18, 41], // the same for the shadow
-  popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
+  iconSize:      [21, 35], // size of the icon
+  iconAnchor:    [18, 41], // point of the icon which will correspond to marker's location
+  popupAnchor:   [-7, -40],  // point from which the popup should open relative to the iconAnchor
   tooltipAnchor: [10, -20]
 });
 
@@ -98,7 +92,7 @@ pokestops.forEach(pokestop => {
     .bindTooltip(`<span>${pokestop.id}</span>`,{permanent: true})
     .addTo(Regular);
   } else {
-    L.marker([pokestop.latitude, pokestop.longitude])
+    L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
     .bindPopup(pokestop.name)
     .bindTooltip(`<span>${pokestop.id}</span>`,{permanent: true})
     .addTo(Regular);
