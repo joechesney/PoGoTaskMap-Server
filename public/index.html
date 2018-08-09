@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
 	<script src="./node_modules/leaflet/dist/leaflet.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.3.1/firebase.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
 	<style>
 		body {
@@ -41,88 +42,10 @@
 <div id='map'></div>
 
 
-<script type="module">
-
-	import  { secrets } from '/secrets.js';
-	firebase.initializeApp(secrets.config);
-	const greenEgg = L.icon({
-		iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
-		shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
-
-		iconSize:      [36, 41], // size of the icon
-		shadowSize:    [41, 41], // size of the shadow
-		iconAnchor:    [18, 41], // point of the icon which will correspond to marker's location
-		shadowAnchor:  [18, 41], // the same for the shadow
-		popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
-		tooltipAnchor: [10, -20]
-	});
-
-		const redEgg = L.icon({
-		iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
-		shadowUrl: 'node_modules/leaflet/dist/images/marker-shadow.png',
-
-		iconSize:      [25, 41], // size of the icon
-		shadowSize:    [41, 41], // size of the shadow
-		iconAnchor:    [12, 41], // point of the icon which will correspond to marker's location
-		shadowAnchor:  [18, 41], // the same for the shadow
-		popupAnchor:   [18, 0],  // point from which the popup should open relative to the iconAnchor
-		tooltipAnchor: [10, -20]
-	});
-
-	const Regular = L.layerGroup();
-	// <?php echo $StopMarkers_Regular; ?>
-	L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Regular);
-
-	const Active = L.layerGroup();
-	// <?php echo $StopMarkers_Active; ?>
-	L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Active);
+<script type="module" src="./main.js"></script>
 
 
-	const mbAttr = '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-		mbUrl = `https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${secrets.mapbox_API_key}`;
-
-	const grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
-		streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
-
-	const map = L.map('map', {
-		center: [36.1497012,-86.8144697],
-		zoom: 15,
-		layers: [streets, Active, Regular]
-	});
-
-	const baseLayers = {
-		"Grayscale": grayscale,
-		"Streets": streets
-	};
-
-	const overlays = {
-		"Active Study": Active,
-		"Inactive": Regular
-	};
-	map.on('click', (e)=>{
-		console.log(`${e.latlng.lat}`);
-		console.log(`${e.latlng.lng}`);
-		console.log(`-----------`);
-	})
-	L.control.layers(baseLayers, overlays).addTo(map);
-	// L.marker([36.150249,-86.8128233]).addTo(Active);
-	// L.marker([36.149596, -86.811927]).addTo(Regular);
-
-	const pokestops = [
-		{latitude: 36.150400123879905, longitude: -86.81216620062756, name: "Centennial Exposition Plaque", id: 1},
-		{latitude: 36.149618, longitude: -86.812215, name: "Butterfly Planter", id: 2},
-		{latitude: 36.149596, longitude: -86.811927, name: "Lizard Planter", id: 3},
-		{latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4},
-	];
-	pokestops.forEach(pokestop => {
-		L.marker([pokestop.latitude, pokestop.longitude])
-		.bindPopup(pokestop.name)
-		.addTo(Regular);
-	});
-</script>
-
-
-<FORM NAME="form" action="index.php" method="post">
+<!-- <FORM NAME="form" action="index.php" method="post">
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0">
 	<TR><TD VALIGN="MIDDLE">
 		<B style="font-size:12pt; font-family:arial,times;">
@@ -132,7 +55,7 @@
 
 		</B><BR>( e.g. rare|stardust|tangela )
 	</TD></TR></TABLE>
-</FORM>
+</FORM> -->
 
 </body>
 </html>
