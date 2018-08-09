@@ -55,7 +55,7 @@ const grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}
 
 const map = L.map('map', {
   center: [36.1497012,-86.8144697],
-  zoom: 15,
+  zoom: 18,
   layers: [streets, Active, Regular]
 });
 
@@ -89,12 +89,21 @@ pokestops.forEach(pokestop => {
   if(pokestop.active){
     L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
     .bindPopup(pokestop.name)
-    .bindTooltip(`<span>${pokestop.id}</span>`,{permanent: true})
+    .bindTooltip(`
+      <span>${pokestop.id}</span>
+      `,
+      {permanent: true})
     .addTo(Regular);
-  } else {
+  } else { // These will be opaque blue
     L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
-    .bindPopup(pokestop.name)
-    .bindTooltip(`<span>${pokestop.id}</span>`,{permanent: true})
+    .bindPopup(`
+      ${pokestop.name}<br>
+      <br><a href="/addTask?${pokestop.id}">Edit Task</a>
+    `)
+    // .bindTooltip(`
+    //   <span>${pokestop.id}</span>
+
+    //   `)
     .addTo(Regular);
 
   }
