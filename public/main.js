@@ -1,5 +1,5 @@
-import  { secrets } from '/secrets.js';
-import  { getPokestops } from '/getPokestops.js';
+import { secrets } from '/secrets.js';
+import { getPokestops } from '/getPokestops.js';
 import { getCurrentDate } from './getCurrentDate.js';
 firebase.initializeApp(secrets.config);
 
@@ -85,16 +85,20 @@ L.control.layers(baseLayers, overlays).addTo(map);
 // L.marker([36.150249,-86.8128233]).addTo(Active);
 // L.marker([36.149596, -86.811927]).addTo(Regular);
 
-const pokestops = [
-  {latitude: 36.150400123879905, longitude: -86.81216620062756, name: "Centennial Exposition Plaque", id: 1, active: true},
-  {latitude: 36.149618, longitude: -86.812215, name: "Butterfly Planter", id: 2, active: false},
-  {latitude: 36.149596, longitude: -86.811927, name: "Lizard Planter", id: 3, active: true},
-  {latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4, active: false},
-];
-pokestops.forEach(pokestop => {
+// const pokestops = [
+//   {latitude: 36.150400123879905, longitude: -86.81216620062756, name: "Centennial Exposition Plaque", id: 1, activeTask: true},
+//   {latitude: 36.149618, longitude: -86.812215, name: "Butterfly Planter", id: 2, activeTask: false},
+//   {latitude: 36.149596, longitude: -86.811927, name: "Lizard Planter", id: 3, activeTask: true},
+//   {latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4, activeTask: false},
+// ];
 
-  // if it has active task, make it red:
-  if(pokestop.active){
+const pokestops = getPokestops();
+pokestops.forEach(pokestop => {
+  // Tooltip: will be displayed to the side, permanently
+  // Popup: this will only be displayed if the user clicks the pindrop
+
+  // if it has activeTask task, make it red:
+  if(pokestop.activeTask){
     L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
     .bindPopup(pokestop.name)
     .bindTooltip(`

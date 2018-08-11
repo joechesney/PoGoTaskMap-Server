@@ -10,5 +10,3 @@ export function getPokestops() {
     })
   })
 }
-
-// export { getPokestops };
