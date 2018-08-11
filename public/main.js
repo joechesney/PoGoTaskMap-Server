@@ -1,6 +1,7 @@
 import  { secrets } from '/secrets.js';
+import  { getPokestops } from '/getPokestops.js';
 firebase.initializeApp(secrets.config);
-
+console.log("pokestops", getPokestops());
 /*
   - Each pokestop will have a time attached to it. When the page loads, it will take the current time,
   and search my database for times that are for the current day. I will basically have to manually
