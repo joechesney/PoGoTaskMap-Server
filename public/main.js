@@ -1,5 +1,6 @@
 import  { secrets } from '/secrets.js';
 import  { getPokestops } from '/getPokestops.js';
+import { getCurrentDate } from './getCurrentDate.js';
 firebase.initializeApp(secrets.config);
 
 getPokestops().then(pokestops=>console.log('all stops 2: ',pokestops));
@@ -71,10 +72,14 @@ const overlays = {
   "Active Study": Active,
   "Inactive": Regular
 };
+
+
 map.on('click', (e)=>{
   console.log(`${e.latlng.lat}`);
   console.log(`${e.latlng.lng}`);
   console.log(`-----------`);
+  getCurrentDate();
+
 })
 L.control.layers(baseLayers, overlays).addTo(map);
 // L.marker([36.150249,-86.8128233]).addTo(Active);
