@@ -98,102 +98,103 @@ L.control.layers(baseLayers, overlays).addTo(map);
 //   {latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4, activeTask: false},
 // ];
 
-const pokestops = getPokestops();
-pokestops.forEach(pokestop => {
-  // Tooltip: will be displayed to the side, permanently
-  // Popup: this will only be displayed if the user clicks the pindrop
-
-  // if it has activeTask task, make it red:
-  if(pokestop.activeTask){
-    L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
-    .bindPopup(pokestop.name)
-    .bindTooltip(`
-      <span>${pokestop.id}</span>
-      `,
-      {permanent: true})
-    .addTo(Regular);
-  } else { // These will be opaque blue
-    L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
-    .bindPopup(`
-      ${pokestop.name}<br>
-      <br><a href="/addTask?${pokestop.id}">Edit Task</a>
-    `)
-    // .bindTooltip(`
-    //   <span>${pokestop.id}</span>
-
-    //   `)
-    .addTo(Regular);
-
-  }
- /*
-  if ($duprow['ActiveInactive'] == 'Active') {
-
-    $StopMarkers_Active .= "L.marker(["
-      . $duprow['stop_Latitude'] .
-    ","
-      . $duprow['stop_Longitude'] .
-    "],{"
-      . $Hatched_Icon .
-    "opacity: 1.0}).bindTooltip('"							// bindTooltip
-
-      . "<b>"
-      . substr($duprow['Reward'],0,15) .
-      "</b><BR>" .
-
-    "',{permanent: true}).addTo(Active),"
-    ;
-  }
-
-  // Display clickable pop-up withadditional details, for active Pokestop field study.
-
-  if ($duprow['ActiveInactive'] == 'Inactive') {
-
-    $StopMarkers_Regular .= "L.marker(["
-      . $duprow['stop_Latitude'] .
-    ","
-      . $duprow['stop_Longitude'] .
-    "],{opacity: 0.2}).bindPopup('"
-      . $duprow['stop_Name'] .
-
-    "<BR><A HREF=\"/AddStudy.php?stopid="
-      . urlencode( $duprow['stop_id'] ) .
-    "\">Report Field Study</A>" .
-
-    "').addTo(Regular),"
-    ;
-
-  // If stop doesn't contain a reported field study, then display transparent pokestop icon.
-
-  } else {
-
-    $StopMarkers_Active .= "L.marker(["
-      . $duprow['stop_Latitude'] .
-    ","
-      . $duprow['stop_Longitude'] .
-    "],{opacity: 0.2}).bindPopup('"
-      . $duprow['stop_Name'] .
-
-    "<BR><b>"
-      . substr($duprow['Reward'],0,15) .
-    "</b><BR>Task: "
-      . $duprow['Study_text'] .
-
-    "<BR><A HREF=\"/tables/tbl_ActiveStops.php?stopid="
-      . urlencode( $duprow['stop_id'] ) .
-    "\" TARGET=\"REPORTRAID\">Edit</A><BR>" .
-
-    "<BR><A HREF=\"https://www.google.com/maps/?daddr="
-      . $duprow['stop_Latitude'] .
-    ","
-      . $duprow['stop_Longitude'] .
-    "\" TARGET=\"DIRECTIONS\">Directions</A>" .
-
-    "').addTo(Active),"
-    ;
-  }
-  */
+getPokestops()
+.then(pokestops=>{
 
 
+  pokestops.forEach(pokestop => {
+    // Tooltip: will be displayed to the side, permanently
+    // Popup: this will only be displayed if the user clicks the pindrop
 
+    // if it has activeTask task, make it red:
+    if(pokestop.activeTask){
+      L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
+      .bindPopup(pokestop.name)
+      .bindTooltip(`
+        <span>${pokestop.id}</span>
+        `,
+        {permanent: true})
+      .addTo(Regular);
+    } else { // These will be opaque blue
+      L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
+      .bindPopup(`
+        ${pokestop.name}<br>
+        <br><a href="/addTask?${pokestop.id}">Edit Task</a>
+      `)
+      // .bindTooltip(`
+      //   <span>${pokestop.id}</span>
 
-});
+      //   `)
+      .addTo(Regular);
+
+    }
+   /*
+    if ($duprow['ActiveInactive'] == 'Active') {
+
+      $StopMarkers_Active .= "L.marker(["
+        . $duprow['stop_Latitude'] .
+      ","
+        . $duprow['stop_Longitude'] .
+      "],{"
+        . $Hatched_Icon .
+      "opacity: 1.0}).bindTooltip('"							// bindTooltip
+
+        . "<b>"
+        . substr($duprow['Reward'],0,15) .
+        "</b><BR>" .
+
+      "',{permanent: true}).addTo(Active),"
+      ;
+    }
+
+    // Display clickable pop-up withadditional details, for active Pokestop field study.
+
+    if ($duprow['ActiveInactive'] == 'Inactive') {
+
+      $StopMarkers_Regular .= "L.marker(["
+        . $duprow['stop_Latitude'] .
+      ","
+        . $duprow['stop_Longitude'] .
+      "],{opacity: 0.2}).bindPopup('"
+        . $duprow['stop_Name'] .
+
+      "<BR><A HREF=\"/AddStudy.php?stopid="
+        . urlencode( $duprow['stop_id'] ) .
+      "\">Report Field Study</A>" .
+
+      "').addTo(Regular),"
+      ;
+
+    // If stop doesn't contain a reported field study, then display transparent pokestop icon.
+
+    } else {
+
+      $StopMarkers_Active .= "L.marker(["
+        . $duprow['stop_Latitude'] .
+      ","
+        . $duprow['stop_Longitude'] .
+      "],{opacity: 0.2}).bindPopup('"
+        . $duprow['stop_Name'] .
+
+      "<BR><b>"
+        . substr($duprow['Reward'],0,15) .
+      "</b><BR>Task: "
+        . $duprow['Study_text'] .
+
+      "<BR><A HREF=\"/tables/tbl_ActiveStops.php?stopid="
+        . urlencode( $duprow['stop_id'] ) .
+      "\" TARGET=\"REPORTRAID\">Edit</A><BR>" .
+
+      "<BR><A HREF=\"https://www.google.com/maps/?daddr="
+        . $duprow['stop_Latitude'] .
+      ","
+        . $duprow['stop_Longitude'] .
+      "\" TARGET=\"DIRECTIONS\">Directions</A>" .
+
+      "').addTo(Active),"
+      ;
+    }
+    */
+
+  });
+})
