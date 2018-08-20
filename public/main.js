@@ -6,21 +6,27 @@ firebase.initializeApp(secrets.config);
 getPokestops().then(pokestops=>console.log('all stops 2: ',pokestops));
 
 /*
-  - Each pokestop will have a time attached to it. When the page loads, it will take the current time,
+  - Each pokestop quest will have a time attached to it. When the page loads, it will take the current time,
   and search my database for times that are for the current day. I will basically have to manually
-  delete tasks over time
+  delete tasks over time. Most likely the only time i need is "MMDDYYYY" or something like that.
+  So when the page is loaded, it will compare the current day to the day of any available quests
+  for the pokestops on the map.
 
   If a stop does not have a task reported yet, then it displays as a gray pin,
     and when you click the stop a popup will appear, with the stops name and 2 input boxes:
     one input for the task requirements, and one for the reward
       - When this info is submitted, it needs to contain the current date, and time,
-      the pokestop ID, the two input values.
+      the pokestop ID, and the two quest input values.
 
 
   If a stop already has a its daily task reported for that day, then it will display a red pin.
     There will be a permanent tooltip that displays for these that will show just the reward.
     Clicking on these stops will open up a box that has the pokestop name, the task requirements,
     and the reward listed. Possibly could also add the address or something?
+
+
+  NOTE: there is a difference between a popup and a tooltip for the pins. A popup only apprears when
+    the user clicks on the pin. And a tooltip is a permanent bubble that appears next to the pin
 
 */
 
