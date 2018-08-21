@@ -9,12 +9,12 @@ export function addTask(taskObject){
     //     console.log('result:',result);
     //   }
     // })
-    $.post(
-      `http://127.0.0.1:8080/addTask/${taskObject.id}`,
+    $.post(`http://127.0.0.1:8080/addTask/${taskObject.id}`,
       taskObject,
       function(data, result){
         console.log('data:',data);
         console.log('result:',result);
+        resolve(data);
       }
     )
   })

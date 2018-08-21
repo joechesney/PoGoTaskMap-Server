@@ -20,20 +20,9 @@ const app = express();
 app.use(express.static('public'));
 app.use(bodyParser.json())
 
-// app.post('/addNewPokestop', (req, res) => {
-//   factory.addNewPokestop({
-//     name: req.body.name,
-//     longitude: req.body.longitude,
-//     latitude: req.body.latitude,
-//   })
-//   .then(() => res.sendStatus(200))
-// })
-
-const addTaskRoute = express.Router();
-
-addTaskRoute.post('/', (req, res, next) => {
+app.post('/addNewPokestop', (req, res) => {
   console.log('req: ',req);
-  factory.addTask({
+  factory.addNewPokestop({
     name: req.body.name,
     longitude: req.body.longitude,
     latitude: req.body.latitude,
@@ -41,8 +30,28 @@ addTaskRoute.post('/', (req, res, next) => {
   .then(() => res.sendStatus(200))
 })
 
-addTaskRoute.get('/', )
+app.post('/addTask', (req, res) => {
+  console.log('req: ',req);
+  factory.addNewPokestop({
+    name: req.body.name,
+    longitude: req.body.longitude,
+    latitude: req.body.latitude,
+  })
+  .then(() => res.sendStatus(200))
+})
 
-app.use("/addTask/:pokestopid", addTaskRoute);
+const addTaskRoute = express.Router();
+
+addTaskRoute.post('/addTask', (req, res) => {
+  console.log('req: ',req);
+  factory.addTask({
+    name: req.body.name,
+    longitude: req.body.longitude,
+    latitude: req.body.latitude,
+  })
+  .then((someData) => res.send(someData))
+})
+
+app.use("/", addTaskRoute);
 
 app.listen(8080);
