@@ -1,7 +1,7 @@
 const express =require('express');
-
-const app = express();
 const mysql = require('mysql');
+const factory = require('./factory');
+const bodyParser = require('body-parser');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -16,7 +16,17 @@ connection.connect((err) => {
   console.log('Connected!');
 });
 
+const app = express();
 app.use(express.static('public'));
+app.use(bodyParser.json())
 
+app.post('/addNewPokestop', (req, res) => {
+  factory.addNewPokestop({
+    name: req.body.name,
+    longitude: req.body.longitude,
+    latitude: req.body.latitude,
+  })
+  .then(() => res.sendStatus(200))
+})
 
 app.listen(8080);
