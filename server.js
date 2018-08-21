@@ -1,4 +1,4 @@
-const express =require('express');
+const express = require('express');
 const mysql = require('mysql');
 const factory = require('./factory');
 const bodyParser = require('body-parser');
@@ -20,16 +20,18 @@ const app = express();
 app.use(express.static('public'));
 app.use(bodyParser.json())
 
-app.post('/addNewPokestop', (req, res) => {
-  factory.addNewPokestop({
-    name: req.body.name,
-    longitude: req.body.longitude,
-    latitude: req.body.latitude,
-  })
-  .then(() => res.sendStatus(200))
-})
+// app.post('/addNewPokestop', (req, res) => {
+//   factory.addNewPokestop({
+//     name: req.body.name,
+//     longitude: req.body.longitude,
+//     latitude: req.body.latitude,
+//   })
+//   .then(() => res.sendStatus(200))
+// })
 
-app.post('/addTask', (req, res) => {
+const addTaskRoute = express.Router();
+
+addTaskRoute.post('/', (req, res, next) => {
   console.log('req: ',req);
   factory.addTask({
     name: req.body.name,
@@ -38,5 +40,9 @@ app.post('/addTask', (req, res) => {
   })
   .then(() => res.sendStatus(200))
 })
+
+addTaskRoute.get('/', )
+
+app.use("/addTask/:pokestopid", addTaskRoute);
 
 app.listen(8080);
