@@ -3,15 +3,17 @@ const express =require('express');
 const app = express();
 const mysql = require('mysql');
 
-const con = mysql.createConnection({
-  host: "localhost",
-  user: "admin",
-  password: "admin"
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  // database: 'first_tester',
+  insecureAuth : true
 });
 
-con.connect(function(err) {
+connection.connect((err) => {
   if (err) throw err;
-  console.log("Connected!");
+  console.log('Connected!');
 });
 
 app.use(express.static('public'));
