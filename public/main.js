@@ -125,9 +125,9 @@ getPokestops()
         <br><a href="/addTask?${pokestop.id}">Edit Task</a>
         <form class="addTask">
           <h1>Create a new user</h1>
-          <input type="text" placeholder="task">
-          <input type="text" placeholder="reward">
-          <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
+          <input id="${pokestop.id}task" type="text" placeholder="task">
+          <input id="${pokestop.id}reward" type="text" placeholder="reward">
+          <input class="addTaskButton" id="${pokestop.id}" type="submit" value="add task">
         </form>
       `)
       // .bindTooltip(`

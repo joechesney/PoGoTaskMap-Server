@@ -29,4 +29,14 @@ app.post('/addNewPokestop', (req, res) => {
   .then(() => res.sendStatus(200))
 })
 
+app.post('/addTask', (req, res) => {
+  console.log('req: ',req);
+  factory.addTask({
+    name: req.body.name,
+    longitude: req.body.longitude,
+    latitude: req.body.latitude,
+  })
+  .then(() => res.sendStatus(200))
+})
+
 app.listen(8080);
