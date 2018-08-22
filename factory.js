@@ -5,7 +5,7 @@ module.exports = {
     return Promise.resolve()
   },
   addTaskToDatabase ({ id, task, reward }) {
-    console.log(`Add pokestop named ${id} with location ${task} ${reward}`)
-    return Promise.resolve()
+    console.log(`Add task to pokestop id ${id} with task ${task} and reward ${reward}`)
+    return Promise.resolve("server-side promise reolve as hell")
   }
 }

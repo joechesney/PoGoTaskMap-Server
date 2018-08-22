@@ -1,16 +1,25 @@
 
 export function addTask(taskObject){
+  console.log('taskObject',taskObject);
   return new Promise((resolve, reject)=>{
     $.ajax({
-      method: 'POST',
       url: `http://localhost:8080/addTask/${taskObject.id}`,
-      data: JSON.stringify(taskObject)
+      method: 'POST',
+      xhrFields: {
+        withCredentials: false
+      },
+      headers: {
 
-    }).done((result)=>{
-      console.log('post resolved', result);
-      resolve(result);
+      },
+      data: taskObject,
+      success: function (data) {
+        console.log('Success', data);
+      },
+      error: function () {
+          console.log('We are sorry but our servers are having an issue right now');
+      }
+
     })
 
-  })
-
+})
 }

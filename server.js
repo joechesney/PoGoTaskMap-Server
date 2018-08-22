@@ -21,14 +21,17 @@ connection.connect((err) => {
 const app = express();
 app.use(cors());
 app.use(express.static('public'));
-app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.post('/addTask/:id', (req, res) => {
-  console.log('req sent ');
+  console.log('req.body: ', req.body);
+  // console.log('req: ', req);
   factory.addTaskToDatabase({
-    name: req.body.name,
-    longitude: req.body.longitude,
-    latitude: req.body.latitude,
+    id: req.body.id,
+    task: req.body.task,
+    reward: req.body.reward,
   })
   .then((something) => {
     console.log('something:',something);
