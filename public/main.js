@@ -90,6 +90,17 @@ map.on('click', (e)=>{
 
 })
 L.control.layers(baseLayers, overlays).addTo(map);
+
+map.on('contextmenu', function(e){
+  console.log('e: ', e);
+  if (e.button == 2) {
+    console.log('held click');
+  }
+});
+
+
+
+
 // L.marker([36.150249,-86.8128233]).addTo(Active);
 // L.marker([36.149596, -86.811927]).addTo(Regular);
 
