@@ -8,15 +8,15 @@ export function addNewPokestop(newPokestopObject){
       xhrFields: {
         withCredentials: false
       },
-      headers: {
+      // headers: {
 
-      },
+      // },
       data: newPokestopObject,
       success: function (data) {
         console.log('Success', data);
       },
-      error: function () {
-          console.log('We are sorry but our servers are having an issue right now');
+      error: function (err) {
+          console.log(err);
       }
 
     })
