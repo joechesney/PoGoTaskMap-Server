@@ -39,14 +39,24 @@
 	<script src='./getPokestops.js' type="module"></script>
 	<script src='./getCurrentDate.js' type="module"></script>
 	<script src='./addTask.js' type="module"></script>
-	<script src='./listeners.js' type="module"></script>
+	<script src='./addNewPokestop.js' type="module"></script>
 </head>
 <body>
 
 <div id='map'></div>
 
+<label for="add-new-pokestop">Add New Pokestop</label>
+<form method="post" name="add-new-pokestop" id="add-new-pokestop-form">
+	<input type="text" placeholder="name" id="add-new-pokestop-name">
+	<input type="number" placeholder="latitude" id="add-new-pokestop-latitude">
+	<input type="number" placeholder="longitude" id="add-new-pokestop-longitude">
+	<input type="submit" value="submit" class="add-new-pokestop-button">
+</form>
+
 
 <script type="module" src="./main.js"></script>
+<script src='./listeners.js' type="module"></script>
+
 
 
 <!-- <FORM NAME="form" action="index.php" method="post">

@@ -26,16 +26,33 @@ app.use(bodyParser.json());
 
 app.post('/addTask/:id', (req, res) => {
   console.log('req.body: ', req.body);
+  const sql = `INSERT INTO pokestops (name, latitude, longitude)
+  VALUES (
+    ${req.body.name},
+    ${req.body.latitude},
+    ${req.body.longitude}
+  )`;
+
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Number of records inserted: " + result.affectedRows);
+  })
+
   // console.log('req: ', req);
-  factory.addTaskToDatabase({
-    id: req.body.id,
-    task: req.body.task,
-    reward: req.body.reward,
-  })
-  .then((something) => {
-    console.log('something:',something);
-    res.send(something)
-  })
+  // factory.addTaskToDatabase({
+  //   id: req.body.id,
+  //   task: req.body.task,
+  //   reward: req.body.reward,
+  // })
+  // .then((something) => {
+  //   console.log('something:',something);
+  //   res.send(something)
+  // })
+})
+
+app.post('/addNewPokestop', (req,res) => {
+  console.log('req.body new pokestop',req.body);
+  res.send("post request received")
 })
 
 app.get('/testRoute', (req, res) => {

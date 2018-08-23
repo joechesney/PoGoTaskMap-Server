@@ -1,5 +1,16 @@
 import { addTask } from './addTask.js';
+import { addNewPokestop } from './addNewPokestop.js';
 export function addListeners() {
+
+  $("#add-new-pokestop-form").on("submit", (e) => {
+    e.preventDefault();
+    let newPokeStopObject = {
+      name: $(`#add-new-popkestop-name`).val(),
+      latitude: $(`#add-new-pokestop-latitude`).val(),
+      longitude: $(`#add-new-pokestop-longitude`).val(),
+    };
+    console.log('newPokestopObjecr', newPokeStopObject);
+  })
 
   $(document).on("click", e => {
     e.preventDefault();
@@ -11,6 +22,19 @@ export function addListeners() {
         id: e.target.id
       }
       addTask(taskObject)
+      .then(result=>{
+        console.log('result',result);
+      })
+    }
+    if (e.target.className === "add-new-pokestop-button"){
+      e.preventDefault();
+      let newPokeStopObject = {
+        name: $(`#add-new-pokestop-name`).val(),
+        latitude: +$(`#add-new-pokestop-latitude`).val(),
+        longitude: +$(`#add-new-pokestop-longitude`).val(),
+      };
+      console.log('newPokestopObjecr', newPokeStopObject);
+      addNewPokestop(newPokeStopObject)
       .then(result=>{
         console.log('result',result);
       })
