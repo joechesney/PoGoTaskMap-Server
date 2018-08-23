@@ -1,4 +1,4 @@
-
+const knex = require('knex');
 module.exports = {
   addPokestopToDatabase ({ name, latitude, longitude }) {
     console.log(`Add pokestop named ${name} with location ${latitude} ${longitude}`)
