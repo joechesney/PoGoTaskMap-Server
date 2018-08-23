@@ -2,14 +2,18 @@ import { addTask } from './addTask.js';
 import { addNewPokestop } from './addNewPokestop.js';
 export function addListeners() {
 
-  $("#add-new-pokestop-form").on("submit", (e) => {
+  $("#add-new-pokestop-form").on("click", (e) => {
     e.preventDefault();
     let newPokeStopObject = {
-      name: $(`#add-new-popkestop-name`).val(),
-      latitude: $(`#add-new-pokestop-latitude`).val(),
-      longitude: $(`#add-new-pokestop-longitude`).val(),
+      name: $(`#add-new-pokestop-name`).val(),
+      latitude: +$(`#add-new-pokestop-latitude`).val(),
+      longitude: +$(`#add-new-pokestop-longitude`).val(),
     };
     console.log('newPokestopObjecr', newPokeStopObject);
+    addNewPokestop(newPokeStopObject)
+    .then(result=>{
+      console.log('result',result);
+    })
   })
 
   $(document).on("click", e => {
@@ -27,17 +31,7 @@ export function addListeners() {
       })
     }
     if (e.target.className === "add-new-pokestop-button"){
-      e.preventDefault();
-      let newPokeStopObject = {
-        name: $(`#add-new-pokestop-name`).val(),
-        latitude: +$(`#add-new-pokestop-latitude`).val(),
-        longitude: +$(`#add-new-pokestop-longitude`).val(),
-      };
-      console.log('newPokestopObjecr', newPokeStopObject);
-      addNewPokestop(newPokeStopObject)
-      .then(result=>{
-        console.log('result',result);
-      })
+
     }
 
     // $.get("http://localhost:8080/testRoute", (data, status)=> console.log('data, status:',data, status))

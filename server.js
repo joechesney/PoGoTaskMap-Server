@@ -25,6 +25,16 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.get('/getPokestops', (req, res, next) => {
+  connection.query(`SELECT * FROM pokestops`, (err, pokestops) =>{
+    if (err) {
+      next(err);
+    } else {
+      res.send(pokestops);
+    }
+  })
+})
+
 app.post('/addTask/:id', (req, res) => {
   console.log('req.body: ', req.body);
 
@@ -56,7 +66,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
-    console.log('req.body new pokestop',req.body);
+    // console.log('req.body new pokestop',req.body);
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude)
       VALUES (
