@@ -55,15 +55,11 @@ app.post('/addNewPokestop', (req,res) => {
   res.send("post request received")
 })
 
-app.get('/testRoute', (req, res) => {
-  res.send({"testKey":"testValue"})
-})
-
 app.use((err, req, res, next ) => {
   err = err || new Error("Internal Server Error");
   res.status( err.status || 500);
   res.json({ error: err.message });
 });
 app.listen(8080, () => {
-  console.log('listening on 8080');
+  console.log('listening on http://localhost:8080');
 });
