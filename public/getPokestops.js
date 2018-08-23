@@ -4,8 +4,6 @@ export function getPokestops() {
   return new Promise((resolve, reject)=>{
     $.get("http://localhost:8080/getPokestops")
     .then(pokestopsArray=>{
-
-      console.log('pokestopsArray: ',pokestopsArray);
       if(pokestopsArray.length > 0){
         resolve(pokestopsArray);
       }

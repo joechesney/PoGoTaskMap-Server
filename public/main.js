@@ -5,7 +5,7 @@ import { addListeners } from './listeners.js';
 firebase.initializeApp(secrets.config);
 addListeners();
 
-getPokestops().then(pokestops=>console.log('all stops 2: ',pokestops));
+getPokestops().then(pokestops=>console.log('all pokestops in main.js: ',pokestops));
 
 /*
   - Each pokestop quest will have a time attached to it. When the page loads, it will take the current time,
@@ -85,9 +85,10 @@ const overlays = {
 map.on('click', (e)=>{
   console.log(`${e.latlng.lat}`);
   console.log(`${e.latlng.lng}`);
+  console.log(getCurrentDate());
   console.log(`-----------`);
-  getCurrentDate();
-
+  $("#add-new-pokestop-latitude").val(e.latlng.lat);
+  $("#add-new-pokestop-longitude").val(e.latlng.lng);
 })
 L.control.layers(baseLayers, overlays).addTo(map);
 
