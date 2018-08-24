@@ -15,6 +15,7 @@ export function addListeners() {
     addNewPokestop(newPokeStopObject)
     .then(result=>{
       console.log('result',result);
+      // probably should clear input fields and reload page here?
     })
   })
 
