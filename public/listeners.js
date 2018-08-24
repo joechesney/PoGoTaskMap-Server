@@ -25,7 +25,7 @@ export function addListeners() {
         requirements: $(`#${e.target.id}task`).val(),
         reward: $(`#${e.target.id}reward`).val(),
         pokestop_id: +e.target.id,
-        task_date: getCurrentDate()
+        task_date_string: getCurrentDate()
       };
       addTask(taskObject)
       .then(result=>{

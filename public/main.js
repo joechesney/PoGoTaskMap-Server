@@ -79,7 +79,7 @@ map.on('contextmenu', function(e){
 // Need to check run conditions for when there are 0 tasks at all,
 //   one task, many tasks for many pokestops, and multiple tasks
 //   for the same pokestop
-getTodaysTasks().then(todaysTasks=>{
+getTodaysTasks(getCurrentDate()).then(todaysTasks=>{
   console.log('todaysTasks: ',todaysTasks);
   getPokestops()
   .then(pokestops=>{
@@ -87,12 +87,13 @@ getTodaysTasks().then(todaysTasks=>{
       // Tooltip: will be displayed to the side, permanently
       // Popup: this will only be displayed if the user clicks the pindrop
 
-      // if it has activeTask task, make it red:
-      if(pokestop.activeTask){
+      // if there is a task available for that pokestop, make it red:
+      if(todaysTasks.map(task => task.pokestop_id == pokestop.id)){
+        const taskReward = todaysTasks.map( task => task.pokestop_id == pokestop.id);
         L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
         .bindPopup(pokestop.name)
         .bindTooltip(`
-          <span>${pokestop.id}</span>
+          <span>${taskReward}</span>
           `,
           {permanent: true})
         .addTo(Regular);

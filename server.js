@@ -33,8 +33,8 @@ app.get('/getPokestops', (req, res, next) => {
   })
 })
 
-app.get('/getTodaysTasks/:task_date', (req, res, next) => {
-  connection.query(`SELECT * FROM tasks WHERE task_date = ${req.params.task_date}`, (err, allTasks) =>{
+app.get('/getTodaysTasks/:task_date_string', (req, res, next) => {
+  connection.query(`SELECT * FROM tasks WHERE task_date_string = ${req.params.task_date_string}`, (err, allTasks) =>{
     if (err) {
       next(err);
     } else {
@@ -42,6 +42,7 @@ app.get('/getTodaysTasks/:task_date', (req, res, next) => {
     }
   })
 })
+
 
 app.post('/addTask/:id', (req, res) => {
   const sql = `
@@ -60,7 +61,6 @@ app.post('/addTask/:id', (req, res) => {
       res.sendStatus(200);
     }
   })
-
 })
 
 app.post('/addNewPokestop', (req, res, next) => {
