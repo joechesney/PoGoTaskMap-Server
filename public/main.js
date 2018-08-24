@@ -2,7 +2,6 @@ import { secrets } from '/secrets.js';
 import { getPokestops } from '/getPokestops.js';
 import { getCurrentDate } from './getCurrentDate.js';
 import { addListeners } from './listeners.js';
-firebase.initializeApp(secrets.config);
 addListeners();
 
 getPokestops().then(pokestops=>console.log('all pokestops in main.js: ',pokestops));

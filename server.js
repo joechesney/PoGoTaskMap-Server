@@ -34,8 +34,6 @@ app.get('/getPokestops', (req, res, next) => {
 })
 
 app.post('/addTask/:id', (req, res) => {
-  console.log('req.body: ', req.body);
-
   const sql = `
     INSERT INTO tasks (requirements, reward, pokestop_id, task_date)
     VALUES (
@@ -47,6 +45,7 @@ app.post('/addTask/:id', (req, res) => {
   connection.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Number of records inserted: " + result.affectedRows);
+    res.send(result.affectedRows);
   })
 
 })
@@ -61,7 +60,6 @@ app.post('/addNewPokestop', (req, res, next) => {
     let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
-    // console.log('req.body new pokestop',req.body);
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude)
       VALUES (
