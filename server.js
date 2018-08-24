@@ -33,6 +33,16 @@ app.get('/getPokestops', (req, res, next) => {
   })
 })
 
+app.get('/getTodaysTasks/:task_date', (req, res, next) => {
+  connection.query(`SELECT * FROM tasks WHERE task_date = ${req.params.task_date}`, (err, allTasks) =>{
+    if (err) {
+      next(err);
+    } else {
+      res.send(allTasks);
+    }
+  })
+})
+
 app.post('/addTask/:id', (req, res) => {
   const sql = `
     INSERT INTO tasks (requirements, reward, pokestop_id, task_date)
@@ -43,9 +53,12 @@ app.post('/addTask/:id', (req, res) => {
       '${req.body.task_date}'
     )`;
   connection.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("Number of records inserted: " + result.affectedRows);
-    res.send(result.affectedRows);
+    if (err) {
+      throw err;
+    } else {
+      console.log("Number of records inserted: " + result.affectedRows);
+      res.sendStatus(200);
+    }
   })
 
 })

@@ -2,34 +2,13 @@ import { secrets } from '/secrets.js';
 import { getPokestops } from '/getPokestops.js';
 import { getCurrentDate } from './getCurrentDate.js';
 import { addListeners } from './listeners.js';
+import { getTodaysTasks } from './getTodaysTasks.js';
 addListeners();
 
-getPokestops().then(pokestops=>console.log('all pokestops in main.js: ',pokestops));
-
-/*
-  - Each pokestop quest will have a time attached to it. When the page loads, it will take the current time,
-  and search my database for times that are for the current day. I will basically have to manually
-  delete tasks over time. Most likely the only time i need is "MMDDYYYY" or something like that.
-  So when the page is loaded, it will compare the current day to the day of any available quests
-  for the pokestops on the map.
-
-  If a stop does not have a task reported yet, then it displays as a gray pin,
-    and when you click the stop a popup will appear, with the stops name and 2 input boxes:
-    one input for the task requirements, and one for the reward
-      - When this info is submitted, it needs to contain the current date, and time,
-      the pokestop ID, and the two quest input values.
+// getPokestops().then(pokestops=>console.log('all pokestops in main.js: ',pokestops));
+// getTodaysTasks(getCurrentDate()).then(allTasks => console.log('dem tasks: ',allTasks))
 
 
-  If a stop already has a its daily task reported for that day, then it will display a red pin.
-    There will be a permanent tooltip that displays for these that will show just the reward.
-    Clicking on these stops will open up a box that has the pokestop name, the task requirements,
-    and the reward listed. Possibly could also add the address or something?
-
-
-  NOTE: there is a difference between a popup and a tooltip for the pins. A popup only apprears when
-    the user clicks on the pin. And a tooltip is a permanent bubble that appears next to the pin
-
-*/
 
 const greenEgg = L.icon({
   iconUrl: 'node_modules/leaflet/dist/images/marker-icon.png',
@@ -50,11 +29,9 @@ const redEgg = L.icon({
 });
 
 const Regular = L.layerGroup();
-// <?php echo $StopMarkers_Regular; ?>
 L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Regular);
 
 const Active = L.layerGroup();
-// <?php echo $StopMarkers_Active; ?>
 L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Active);
 
 
@@ -98,106 +75,112 @@ map.on('contextmenu', function(e){
   }
 });
 
-// Right here, the first call should get all
 
+// Need to check run conditions for when there are 0 tasks at all,
+//   one task, many tasks for many pokestops, and multiple tasks
+//   for the same pokestop
+getTodaysTasks().then(todaysTasks=>{
+  console.log('todaysTasks: ',todaysTasks);
+  getPokestops()
+  .then(pokestops=>{
+    pokestops.forEach(pokestop => {
+      // Tooltip: will be displayed to the side, permanently
+      // Popup: this will only be displayed if the user clicks the pindrop
 
-getPokestops()
-.then(pokestops=>{
-  pokestops.forEach(pokestop => {
-    // Tooltip: will be displayed to the side, permanently
-    // Popup: this will only be displayed if the user clicks the pindrop
+      // if it has activeTask task, make it red:
+      if(pokestop.activeTask){
+        L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
+        .bindPopup(pokestop.name)
+        .bindTooltip(`
+          <span>${pokestop.id}</span>
+          `,
+          {permanent: true})
+        .addTo(Regular);
+      } else { // These will be opaque blue
+        L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
+        .bindPopup(`
+          ${pokestop.name}<br>
+          <br><a href="/addTask?${pokestop.id}">Edit Task</a>
+          <div class="addTask">
+            <h1>Create a new user</h1>
+            <input id="${pokestop.id}task" type="text" placeholder="task">
+            <input id="${pokestop.id}reward" type="text" placeholder="reward">
+            <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
+          </div>
+        `)
+        .addTo(Regular);
 
-    // if it has activeTask task, make it red:
-    if(pokestop.activeTask){
-      L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
-      .bindPopup(pokestop.name)
-      .bindTooltip(`
-        <span>${pokestop.id}</span>
-        `,
-        {permanent: true})
-      .addTo(Regular);
-    } else { // These will be opaque blue
-      L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
-      .bindPopup(`
-        ${pokestop.name}<br>
-        <br><a href="/addTask?${pokestop.id}">Edit Task</a>
-        <div class="addTask">
-          <h1>Create a new user</h1>
-          <input id="${pokestop.id}task" type="text" placeholder="task">
-          <input id="${pokestop.id}reward" type="text" placeholder="reward">
-          <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
-        </div>
-      `)
-      .addTo(Regular);
-
-    }
-   /*
-    if ($duprow['ActiveInactive'] == 'Active') {
-
-      $StopMarkers_Active .= "L.marker(["
-        . $duprow['stop_Latitude'] .
-      ","
-        . $duprow['stop_Longitude'] .
-      "],{"
-        . $Hatched_Icon .
-      "opacity: 1.0}).bindTooltip('"							// bindTooltip
-
-        . "<b>"
-        . substr($duprow['Reward'],0,15) .
-        "</b><BR>" .
-
-      "',{permanent: true}).addTo(Active),"
-      ;
-    }
-
-    // Display clickable pop-up withadditional details, for active Pokestop field study.
-
-    if ($duprow['ActiveInactive'] == 'Inactive') {
-
-      $StopMarkers_Regular .= "L.marker(["
-        . $duprow['stop_Latitude'] .
-      ","
-        . $duprow['stop_Longitude'] .
-      "],{opacity: 0.2}).bindPopup('"
-        . $duprow['stop_Name'] .
-
-      "<BR><A HREF=\"/AddStudy.php?stopid="
-        . urlencode( $duprow['stop_id'] ) .
-      "\">Report Field Study</A>" .
-
-      "').addTo(Regular),"
-      ;
-
-    // If stop doesn't contain a reported field study, then display transparent pokestop icon.
-
-    } else {
-
-      $StopMarkers_Active .= "L.marker(["
-        . $duprow['stop_Latitude'] .
-      ","
-        . $duprow['stop_Longitude'] .
-      "],{opacity: 0.2}).bindPopup('"
-        . $duprow['stop_Name'] .
-
-      "<BR><b>"
-        . substr($duprow['Reward'],0,15) .
-      "</b><BR>Task: "
-        . $duprow['Study_text'] .
-
-      "<BR><A HREF=\"/tables/tbl_ActiveStops.php?stopid="
-        . urlencode( $duprow['stop_id'] ) .
-      "\" TARGET=\"REPORTRAID\">Edit</A><BR>" .
-
-      "<BR><A HREF=\"https://www.google.com/maps/?daddr="
-        . $duprow['stop_Latitude'] .
-      ","
-        . $duprow['stop_Longitude'] .
-      "\" TARGET=\"DIRECTIONS\">Directions</A>" .
-
-      "').addTo(Active),"
-      ;
-    }
-    */
-
-  });
+      }
+    });
+  })
 })
+
+// This was the original code from PHP project:
+
+/*
+if ($duprow['ActiveInactive'] == 'Active') {
+
+  $StopMarkers_Active .= "L.marker(["
+    . $duprow['stop_Latitude'] .
+  ","
+    . $duprow['stop_Longitude'] .
+  "],{"
+    . $Hatched_Icon .
+  "opacity: 1.0}).bindTooltip('"							// bindTooltip
+
+    . "<b>"
+    . substr($duprow['Reward'],0,15) .
+    "</b><BR>" .
+
+  "',{permanent: true}).addTo(Active),"
+  ;
+}
+
+// Display clickable pop-up withadditional details, for active Pokestop field study.
+
+if ($duprow['ActiveInactive'] == 'Inactive') {
+
+  $StopMarkers_Regular .= "L.marker(["
+    . $duprow['stop_Latitude'] .
+  ","
+    . $duprow['stop_Longitude'] .
+  "],{opacity: 0.2}).bindPopup('"
+    . $duprow['stop_Name'] .
+
+  "<BR><A HREF=\"/AddStudy.php?stopid="
+    . urlencode( $duprow['stop_id'] ) .
+  "\">Report Field Study</A>" .
+
+  "').addTo(Regular),"
+  ;
+
+// If stop doesn't contain a reported field study, then display transparent pokestop icon.
+
+} else {
+
+  $StopMarkers_Active .= "L.marker(["
+    . $duprow['stop_Latitude'] .
+  ","
+    . $duprow['stop_Longitude'] .
+  "],{opacity: 0.2}).bindPopup('"
+    . $duprow['stop_Name'] .
+
+  "<BR><b>"
+    . substr($duprow['Reward'],0,15) .
+  "</b><BR>Task: "
+    . $duprow['Study_text'] .
+
+  "<BR><A HREF=\"/tables/tbl_ActiveStops.php?stopid="
+    . urlencode( $duprow['stop_id'] ) .
+  "\" TARGET=\"REPORTRAID\">Edit</A><BR>" .
+
+  "<BR><A HREF=\"https://www.google.com/maps/?daddr="
+    . $duprow['stop_Latitude'] .
+  ","
+    . $duprow['stop_Longitude'] .
+  "\" TARGET=\"DIRECTIONS\">Directions</A>" .
+
+  "').addTo(Active),"
+  ;
+}
+*/

@@ -24,7 +24,7 @@ export function addListeners() {
       let taskObject = {
         requirements: $(`#${e.target.id}task`).val(),
         reward: $(`#${e.target.id}reward`).val(),
-        pokestop_id: e.target.id,
+        pokestop_id: +e.target.id,
         task_date: getCurrentDate()
       };
       addTask(taskObject)
