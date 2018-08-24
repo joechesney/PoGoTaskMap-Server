@@ -1,6 +1,5 @@
 const express = require('express');
 const mysql = require('mysql');
-const factory = require('./factory');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
