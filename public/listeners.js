@@ -3,7 +3,7 @@ import { addNewPokestop } from './addNewPokestop.js';
 import { getCurrentDate } from './getCurrentDate.js';
 export function addListeners() {
 
-  $("#add-new-pokestop-form").on("click", (e) => {
+  $("#add-new-pokestop-button").on("click", (e) => {
     e.preventDefault();
     let newPokeStopObject = {
       name: $(`#add-new-pokestop-name`).val(),
@@ -11,7 +11,7 @@ export function addListeners() {
       longitude: +$(`#add-new-pokestop-longitude`).val(),
       date_submitted: new Date().toISOString().slice(0, 19).replace('T', ' '),
     };
-    console.log('newPokestopObjecr', newPokeStopObject);
+    console.log('newPokestopObject', newPokeStopObject);
     addNewPokestop(newPokeStopObject)
     .then(result=>{
       console.log('result',result);
@@ -35,11 +35,6 @@ export function addListeners() {
         console.log('result',result);
       })
     }
-    if (e.target.className === "add-new-pokestop-button"){
-
-    }
-
-    // $.get("http://localhost:8080/testRoute", (data, status)=> console.log('data, status:',data, status))
 
   })
 }

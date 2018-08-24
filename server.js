@@ -88,13 +88,16 @@ app.post('/addNewPokestop', (req, res, next) => {
         '${req.body.name}',
         ${req.body.latitude},
         ${req.body.longitude},
-        ${req.body.date_submitted}
+        '${req.body.date_submitted}'
       )`;
     connection.query(sql, function (err, result) {
-      if (err) throw err;
-      console.log("Number of records inserted: " + result.affectedRows);
+      if (err) {
+        throw err;
+      } else {
+        res.sendStatus(200);
+        console.log("Number of records inserted: " + result.affectedRows);
+      }
     });
-    res.send("new pokestop added successfully", result);
 
   }
 
