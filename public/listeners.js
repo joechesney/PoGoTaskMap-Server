@@ -14,8 +14,15 @@ export function addListeners() {
     console.log('newPokestopObject', newPokeStopObject);
     addNewPokestop(newPokeStopObject)
     .then(result=>{
-      console.log('result',result);
+      console.log('result of addNewPokestop',result);
       // probably should clear input fields and reload page here?
+      // or just have it render this new pokestop right away?
+      // should make a function that takes in pokestop object
+      //   and prints it to the screen, rather than having it loop
+      //   over an array of pokestops and manually print them
+      $(`#add-new-pokestop-name`).val("");
+      $(`#add-new-pokestop-latitude`).val("");
+      $(`#add-new-pokestop-longitude`).val("");
     })
   })
 
