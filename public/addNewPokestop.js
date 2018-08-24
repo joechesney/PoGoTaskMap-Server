@@ -1,7 +1,7 @@
 
-export function addNewPokestop(newPokestopObject){
-  console.log('newPokestopObject',newPokestopObject);
-  return new Promise((resolve, reject)=>{
+export function addNewPokestop(newPokestopObject) {
+  console.log('newPokestopObject', newPokestopObject);
+  return new Promise((resolve, reject) => {
     $.ajax({
       url: `http://localhost:8080/addNewPokestop`,
       method: 'POST',
@@ -9,7 +9,6 @@ export function addNewPokestop(newPokestopObject){
         withCredentials: false
       },
       // headers: {
-
       // },
       data: newPokestopObject,
       success: function (data) {
@@ -17,11 +16,9 @@ export function addNewPokestop(newPokestopObject){
         resolve(data);
       },
       error: function (err) {
-          console.log(err);
-          reject(err)
+        console.log(err);
+        reject(err);
       }
-
-    })
-
-})
-}
+    });
+  });
+};

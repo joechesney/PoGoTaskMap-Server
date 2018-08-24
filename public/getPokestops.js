@@ -8,8 +8,8 @@ export function getPokestops() {
         resolve(pokestopsArray);
       }
       else {
-        reject(err)
+        reject(err);
       }
-    })
-  })
-}
+    });
+  });
+};
