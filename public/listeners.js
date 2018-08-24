@@ -13,8 +13,8 @@ export function addListeners() {
     };
     console.log('newPokestopObject', newPokeStopObject);
     addNewPokestop(newPokeStopObject)
-    .then(result=>{
-      console.log('result of addNewPokestop',result);
+    .then(result => {
+      console.log('result of addNewPokestop', result);
       // probably should clear input fields and reload page here?
       // or just have it render this new pokestop right away?
       // should make a function that takes in pokestop object
@@ -28,8 +28,8 @@ export function addListeners() {
 
   $(document).on("click", e => {
     e.preventDefault();
-
-    if (e.target.className === "addTaskButton"){
+    if (e.target.className === "addTaskButton") {
+      // should create functions that make these time strings
       let taskObject = {
         requirements: $(`#${e.target.id}task`).val(),
         reward: $(`#${e.target.id}reward`).val(),
@@ -39,8 +39,8 @@ export function addListeners() {
         task_date_end_time: new Date().toISOString().slice(0, 8) + (new Date().getUTCDate() + 1) + " 00:00:00",
       };
       addTask(taskObject)
-      .then(result=>{
-        console.log('result',result);
+      .then(result => {
+        console.log('result', result);
       })
     }
 
