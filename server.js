@@ -46,12 +46,21 @@ app.get('/getTodaysTasks/:task_date_string', (req, res, next) => {
 
 app.post('/addTask/:id', (req, res) => {
   const sql = `
-    INSERT INTO tasks (requirements, reward, pokestop_id, task_date)
+    INSERT INTO tasks (
+      requirements,
+      reward,
+      pokestop_id,
+      task_date_string,
+      task_date_and_submission_time,
+      task_date_end_time
+    )
     VALUES (
       '${req.body.requirements}',
       '${req.body.reward}',
       ${req.body.pokestop_id},
-      '${req.body.task_date}'
+      '${req.body.task_date_string}',
+      '${req.body.task_date_and_submission_time}',
+      '${req.body.task_date_end_time}'
     )`;
   connection.query(sql, function (err, result) {
     if (err) {
@@ -69,16 +78,17 @@ app.post('/addNewPokestop', (req, res, next) => {
   const northmostLocation = [36.64965136535208, -86.79136861074458]; // Kentucky border
   const eastmostLocation = [35.95737315896857, -83.47954587059279]; // past Knoxville
   const southmostLocation = [34.56341006121154, -86.60234843420953]; // below Huntsville
-  if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1], req.body.logitude > eastmostLocation[1]){
+  if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1], req.body.longitude > eastmostLocation[1]){
     let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
     const sql = `
-      INSERT INTO pokestops (name, latitude, longitude)
+      INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
         '${req.body.name}',
         ${req.body.latitude},
-        ${req.body.longitude}
+        ${req.body.longitude},
+        ${req.body.date_submitted}
       )`;
     connection.query(sql, function (err, result) {
       if (err) throw err;

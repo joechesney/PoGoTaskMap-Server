@@ -9,6 +9,7 @@ export function addListeners() {
       name: $(`#add-new-pokestop-name`).val(),
       latitude: +$(`#add-new-pokestop-latitude`).val(),
       longitude: +$(`#add-new-pokestop-longitude`).val(),
+      date_submitted: new Date().toISOString().slice(0, 19).replace('T', ' '),
     };
     console.log('newPokestopObjecr', newPokeStopObject);
     addNewPokestop(newPokeStopObject)
@@ -25,7 +26,9 @@ export function addListeners() {
         requirements: $(`#${e.target.id}task`).val(),
         reward: $(`#${e.target.id}reward`).val(),
         pokestop_id: +e.target.id,
-        task_date_string: getCurrentDate()
+        task_date_string: getCurrentDate(),
+        task_date_and_submission_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        task_date_end_time: new Date().toISOString().slice(0, 8) + (new Date().getUTCDate() + 1) + " 00:00:00",
       };
       addTask(taskObject)
       .then(result=>{

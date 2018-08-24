@@ -88,7 +88,7 @@ getTodaysTasks(getCurrentDate()).then(todaysTasks=>{
       // Popup: this will only be displayed if the user clicks the pindrop
 
       // if there is a task available for that pokestop, make it red:
-      if(todaysTasks.map(task => task.pokestop_id == pokestop.id)){
+      if(pokestop.chups){
         const taskReward = todaysTasks.map( task => task.pokestop_id == pokestop.id);
         L.marker([pokestop.latitude, pokestop.longitude],{icon: redEgg, })
         .bindPopup(pokestop.name)
