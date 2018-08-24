@@ -13,7 +13,6 @@ const connection = mysql.createConnection({
   insecureAuth : true
 });
 
-
 connection.connect((err) => {
   if (err) throw err;
   console.log('Connected!');
@@ -38,22 +37,19 @@ app.get('/getPokestops', (req, res, next) => {
 app.post('/addTask/:id', (req, res) => {
   console.log('req.body: ', req.body);
 
-
+  const sql = `
+    INSERT INTO tasks (requirements, reward, pokestop_id, task_date)
+    VALUES (
+      '${req.body.requirements}',
+      '${req.body.reward}',
+      ${req.body.pokestop_id},
+      '${req.body.task_date}'
+    )`;
   connection.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Number of records inserted: " + result.affectedRows);
   })
 
-  // console.log('req: ', req);
-  // factory.addTaskToDatabase({
-  //   id: req.body.id,
-  //   task: req.body.task,
-  //   reward: req.body.reward,
-  // })
-  // .then((something) => {
-  //   console.log('something:',something);
-  //   res.send(something)
-  // })
 })
 
 app.post('/addNewPokestop', (req, res, next) => {
@@ -77,8 +73,8 @@ app.post('/addNewPokestop', (req, res, next) => {
     connection.query(sql, function (err, result) {
       if (err) throw err;
       console.log("Number of records inserted: " + result.affectedRows);
-    })
-    res.send("new pokestop added successfully")
+    });
+    res.send("new pokestop added successfully", result);
 
   }
 

@@ -1,5 +1,6 @@
 import { addTask } from './addTask.js';
 import { addNewPokestop } from './addNewPokestop.js';
+import { getCurrentDate } from './getCurrentDate.js';
 export function addListeners() {
 
   $("#add-new-pokestop-form").on("click", (e) => {
@@ -21,10 +22,11 @@ export function addListeners() {
 
     if (e.target.className === "addTaskButton"){
       let taskObject = {
-        task: $(`#${e.target.id}task`).val(),
+        requirements: $(`#${e.target.id}task`).val(),
         reward: $(`#${e.target.id}reward`).val(),
-        id: e.target.id
-      }
+        pokestop_id: e.target.id,
+        task_date: getCurrentDate()
+      };
       addTask(taskObject)
       .then(result=>{
         console.log('result',result);

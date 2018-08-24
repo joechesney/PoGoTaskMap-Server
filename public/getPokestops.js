@@ -11,8 +11,5 @@ export function getPokestops() {
         reject(err)
       }
     })
-
-
-
   })
 }

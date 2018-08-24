@@ -99,23 +99,11 @@ map.on('contextmenu', function(e){
   }
 });
 
+// Right here, the first call should get all
 
-
-
-// L.marker([36.150249,-86.8128233]).addTo(Active);
-// L.marker([36.149596, -86.811927]).addTo(Regular);
-
-// const pokestops = [
-//   {latitude: 36.150400123879905, longitude: -86.81216620062756, name: "Centennial Exposition Plaque", id: 1, activeTask: true},
-//   {latitude: 36.149618, longitude: -86.812215, name: "Butterfly Planter", id: 2, activeTask: false},
-//   {latitude: 36.149596, longitude: -86.811927, name: "Lizard Planter", id: 3, activeTask: true},
-//   {latitude: 36.14974886537123, longitude: -86.81140367618082, name: "Bench Please", id: 4, activeTask: false},
-// ];
 
 getPokestops()
 .then(pokestops=>{
-
-
   pokestops.forEach(pokestop => {
     // Tooltip: will be displayed to the side, permanently
     // Popup: this will only be displayed if the user clicks the pindrop
@@ -141,10 +129,6 @@ getPokestops()
           <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
         </div>
       `)
-      // .bindTooltip(`
-      //   <span>${pokestop.id}</span>
-
-      //   `)
       .addTo(Regular);
 
     }
