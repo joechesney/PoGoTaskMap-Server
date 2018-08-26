@@ -1,3 +1,5 @@
+
+"use strict";
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -23,6 +25,7 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//  Use * sparingly, try to be more specific. I know this is a challenge since your DB is probably very small at the moment, but you want to show that you're thinking ahead.
 app.get('/getPokestops', (req, res, next) => {
   connection.query(`SELECT * FROM pokestops`, (err, pokestops) =>{
     if (err) {
@@ -34,6 +37,8 @@ app.get('/getPokestops', (req, res, next) => {
 })
 
 app.get('/getTodaysTasks/:task_date_string', (req, res, next) => {
+
+  // For good measure, you can also type comments about what you're doing and why. You know, I know, they know, you're building this as proof-of-competence at development, own it. Everyone appreciates honesty.
   connection.query(`SELECT * FROM tasks WHERE task_date_string = ${req.params.task_date_string}`, (err, allTasks) =>{
     if (err) {
       next(err);
@@ -73,7 +78,7 @@ app.post('/addTask/:id', (req, res) => {
 })
 
 app.post('/addNewPokestop', (req, res, next) => {
-
+  // Name your variables more clearly. Location ia vague. Is it a boundary,  a stop, a destination, etc?
   const westmostLocation = [36.073201300051345, -87.39700190267196]; // past Dickson
   const northmostLocation = [36.64965136535208, -86.79136861074458]; // Kentucky border
   const eastmostLocation = [35.95737315896857, -83.47954587059279]; // past Knoxville
@@ -98,9 +103,7 @@ app.post('/addNewPokestop', (req, res, next) => {
         console.log("Number of records inserted: " + result.affectedRows);
       }
     });
-
   }
-
 })
 
 app.use((err, req, res, next ) => {

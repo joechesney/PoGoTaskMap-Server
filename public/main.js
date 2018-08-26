@@ -82,8 +82,17 @@ map.on('contextmenu', function(e){
 getTodaysTasks(getCurrentDate()).then(todaysTasks=>{
   console.log('todaysTasks: ',todaysTasks);
   getPokestops()
-  .then(pokestops=>{
-    pokestops.forEach(pokestop => {
+  .then(allPokestops=>{
+    // need one array of pokestops that have tasks
+    // and one array of pokestops with no tasks
+    // const pokestopsWithTasks = allPokestops.filter(pokestop => todaysTasks.map(task => task.pokestop_id === pokestop.id));
+    const pokestopsWithTask = todaysTasks.map(task => allPokestops.filter(stop => task.pokestop_id == stop.id));
+    console.log('pokestopsWithTask', pokestopsWithTask);
+
+    const pokestopsNoTask = todaysTasks.map(task => pokestopsWithTask.filter(stop => task.pokestop_id == stop.id));
+    console.log('pokestopsNoTask', pokestopsNoTask);
+
+    allPokestops.forEach(pokestop => {
       // Tooltip: will be displayed to the side, permanently
       // Popup: this will only be displayed if the user clicks the pindrop
 
@@ -100,12 +109,12 @@ getTodaysTasks(getCurrentDate()).then(todaysTasks=>{
       } else { // These will be opaque blue
         L.marker([pokestop.latitude, pokestop.longitude], { icon:greenEgg, opacity: 0.2 })
         .bindPopup(`
-          ${pokestop.name}<br>
+          <br>
           <br><a href="/addTask?${pokestop.id}">Edit Task</a>
           <div class="addTask">
-            <h1>Create a new user</h1>
-            <input id="${pokestop.id}task" type="text" placeholder="task">
-            <input id="${pokestop.id}reward" type="text" placeholder="reward">
+            <h1>${pokestop.name}</h1>
+            <input id="${pokestop.id}task" type="text" placeholder="task" required>
+            <input id="${pokestop.id}reward" type="text" placeholder="reward" required>
             <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
           </div>
         `)
