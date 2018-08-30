@@ -4,6 +4,9 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
+
+
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -25,8 +28,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get('/getPokestops', (req, res, next) => {
-  // Need to change the * below. Don't need all columns.
-  connection.query(`SELECT * FROM pokestops`, (err, pokestops) =>{
+  // Getting the pokestops also gets the active tasks and gives the pokestops
+  // the relationship with the task and also the property on the same object
+
+  connection.query(`
+  SELECT
+  pokestops.*,
+
+    tasks.requirements,
+    tasks.reward,
+    tasks.pokestop_id,
+    tasks.task_date_end_time,
+    tasks.id AS task_id,
+    CASE
+      WHEN tasks.task_date_end_time > NOW()
+      THEN 'true'
+      ELSE 'false'
+      END active
+  FROM pokestops
+  LEFT JOIN tasks
+  ON tasks.pokestop_id = pokestops.id
+  AND tasks.task_date_end_time > NOW()
+  `, (err, pokestops) =>{
     if (err) {
       next(err);
     } else {
@@ -34,18 +57,6 @@ app.get('/getPokestops', (req, res, next) => {
     }
   })
 })
-
-app.get('/getTodaysTasks/:task_date_string', (req, res, next) => {
-  // This route pulls submitted tasks from today on page load
-  connection.query(`SELECT * FROM tasks WHERE task_date_string = ${req.params.task_date_string}`, (err, allTasks) =>{
-    if (err) {
-      next(err);
-    } else {
-      res.send(allTasks);
-    }
-  })
-})
-
 
 app.post('/addTask/:id', (req, res) => {
   // This route sends a user-submitted task as a POST request
@@ -65,10 +76,10 @@ app.post('/addTask/:id', (req, res) => {
       '${req.body.reward}',
       ${req.body.pokestop_id},
       '${req.body.task_date_string}',
-      '${req.body.task_date_and_submission_time}',
-      '${req.body.task_date_end_time}'
+      NOW(),
+      CURRENT_DATE() + INTERVAL 1 DAY
     )`;
-  connection.query(sql, function (err, result) {
+    connection.query(sql, function (err, result) {
     if (err) {
       throw err;
     } else {
@@ -100,7 +111,7 @@ app.post('/addNewPokestop', (req, res, next) => {
         '${req.body.name}',
         ${req.body.latitude},
         ${req.body.longitude},
-        '${req.body.date_submitted}'
+        NOW()
       )`;
     connection.query(sql, function (err, result) {
       if (err) {
@@ -111,6 +122,39 @@ app.post('/addNewPokestop', (req, res, next) => {
       }
     });
   }
+})
+app.post('/changeRequest', (req, res, next) => {
+  // This endpoint will send me an email with any requested changes
+  console.log('req :', req.body);
+  const server_secrets = require('./server_secrets.js');
+  console.log('server_secrets',server_secrets);
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: `${server_secrets.literallyNothing}`,
+      pass: `${server_secrets.randomVariable}`
+    }
+  });
+  const mailOptions = {
+    from: `${req.body.userEmail}`,
+    to: `${server_secrets.literallyNothing}`,
+    subject: "CHANGE REQUEST FROM NASHQUESTMAP",
+    html: `
+    Message from some dear Pokemon friend named ${req.body.userEmail},<br>
+    They said:<br>
+    <br>
+    ${req.body.changesRequested}`
+  };
+  console.log('mailOptions',mailOptions);
+  transporter.sendMail(mailOptions, function(err, info){
+    if(err){
+      next(err);
+    } else {
+      console.log('info: ',info);
+      res.sendStatus(200);
+    }
+  })
+
 })
 
 // Error handler
