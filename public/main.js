@@ -1,6 +1,8 @@
 import { secrets } from '/secrets.js';
-import { getPokestops } from '/getPokestops.js';
-import { addListeners } from './listeners.js';
+import { getPokestops } from './js/getPokestops.js';
+import { addListeners } from './js/listeners.js';
+import { rewardSearch } from './js/rewardSearch.js';
+
 addListeners(); // adds event listeners to the page
 
 var bluePin = L.icon({
@@ -20,13 +22,25 @@ var redPin = L.icon({
 });
 
 var Regular = L.layerGroup();
-// L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Regular);
 
 var Active = L.layerGroup();
-// L.marker([0,0],{opacity: 1.0}).bindPopup('TEST').addTo(Active);
-console.log('new Date()',new Date());
+
+let specialObject = { bluePin, redPin, Regular, Active };
+
+$("#reward-search-button").on("click", function() {
+  console.log('query mug: ',$("#reward-search").val());
+  rewardSearch($("#reward-search").val())
+  .then(results => {
+    console.log('results of query',results);
+    Active.clearLayers(); //Maybe should remove Regular layer too?
+    results.forEach(pokestop => {
+      printPokestops(results, specialObject, true);
+    })
+  })
+});
 
 
+import { printPokestops } from './js/printPokestops.js';
 getPokestops()
 .then(allPokestops=>{
   console.log('allPokestops',allPokestops);
@@ -34,36 +48,7 @@ getPokestops()
   // Popup: this will only be displayed if the user clicks the pindrop
   // if there is a task available for that pokestop, make it red:
   // otherwise, make it opaque blue
-  allPokestops.forEach(pokestop => {
-    if(pokestop.active === 'true'){
-      L.marker([pokestop.latitude, pokestop.longitude],{icon: redPin })
-      .bindPopup(`
-      <span><b>${pokestop.name}</b></span><br>
-      <span>Task: ${pokestop.requirements}</span><br>
-      <span>Reward: ${pokestop.reward}</span><br>
-      `)
-      .bindTooltip(`
-        <span>${pokestop.reward}</span>
-        `,
-        {permanent: true})
-      .addTo(Active);
-    } else if (pokestop.active === 'false') {
-      L.marker([pokestop.latitude, pokestop.longitude],
-        { icon:bluePin, opacity: 0.2 })
-      .bindPopup(`
-        <br>
-        <div class="addTask">
-          <h1>${pokestop.name}</h1>
-          <input id="${pokestop.id}task" type="text" placeholder="task" required>
-          <input id="${pokestop.id}reward" type="text" placeholder="reward" required>
-          <input class="addTaskButton" id="${pokestop.id}" type="button" value="add task">
-        </div>
-      `)
-      .addTo(Regular);
-    } else {
-      console.log('3rd condition. Neither false nor true for active task ', pokestop);
-    }
-  });
+  printPokestops(allPokestops, specialObject, false);
 
 
 
@@ -80,23 +65,14 @@ getPokestops()
   });
 
   // This line centers the map on the users location if they accept geolocation
-  map.locate({setView: true, maxZoom: 16});
+  // map.locate({setView: true, maxZoom: 16});
+  L.control.locate({drawCircle: false, icon: "actually-good-my-location-icon"}).addTo(map);
+  $(".actually-good-my-location-icon").append("<img class='my-location-image'  src='./images/my_location_grey.png' />")
 
-  function onLocationFound(e) {
-    // This function shows a marker and circle around your current location
-    // It was cool that it worked, but its pretty pointless tbh
-    console.log('event:', e);
-    var radius = e.accuracy / 2;
-    L.marker(e.latlng).addTo(map)
-      .bindPopup("You are within " + radius + " meters from this point").openPopup();
-    L.circle(e.latlng, radius).addTo(map);
-  }
-  // map.on('locationfound', onLocationFound);
   var baseLayers = {
     "Grayscale": grayscale,
     "Streets": streets
   };
-
 
   var overlays = {
     "Active Task": Active,
@@ -108,18 +84,8 @@ getPokestops()
   map.on('click', (e)=>{
     console.log(`${e.latlng.lat}`);
     console.log(`${e.latlng.lng}`);
-    // console.log(getCurrentDate());
-    console.log('Date.now()',Date.now());
-    console.log(`-----------`);
     $("#add-new-pokestop-latitude").val(e.latlng.lat);
     $("#add-new-pokestop-longitude").val(e.latlng.lng);
   })
 });
 
-
-// Need to check run conditions for when there are 0 tasks at all,
-//   one task, many tasks for many pokestops, and multiple tasks
-//   for the same pokestop
-
-// Need a handler for if a task is created for a stop, and then
-// that stop is deleted
