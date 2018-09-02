@@ -203,6 +203,6 @@ app.use((err, req, res, next ) => {
   res.status( err.status || 500);
   res.json({ error: err.message });
 });
-app.listen(8080, () => {
-  console.log('listening on http://localhost:8080');
+app.listen(process.env.PORT, () => {
+  console.log(`listening on http://localhost:${process.env.PORT}`);
 });
