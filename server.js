@@ -117,7 +117,12 @@ app.post('/addTask/:id', (req, res) => {
       throw err;
     } else {
       console.log("Number of records inserted: " + result.affectedRows);
-      res.sendStatus(200);
+      console.log('result: ',result);
+      res.send({
+        insertId: result.insertId,
+        serverStatus: result.serverStatus,
+        pokestopId: req.body.pokestop_id
+      });
     }
   })
 })
@@ -156,6 +161,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     });
   }
 })
+
 app.post('/changeRequest', (req, res, next) => {
   // This endpoint will send me an email with any requested changes
   // console.log('req :', req.body);
