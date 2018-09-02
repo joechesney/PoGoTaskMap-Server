@@ -2,9 +2,14 @@
   "name": "NashQuestMap",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "8.9.1",
+    "npm": "5.8.0"
   },
   "keywords": [],
   "author": "",
