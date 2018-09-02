@@ -24,6 +24,13 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+setInterval(function () {
+  connection.query('SELECT 1', function(err, result){
+    if(err) console.log('err  ',err);
+    else if(result) console.log('result  ',result);
+  });
+}, 5000);
+
 app.get('/rewardSearch/', (req, res, next) => {
   // This basically does what the getPokestops endpoint does, except
   // that it is a much narrower result
