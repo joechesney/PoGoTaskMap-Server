@@ -6,8 +6,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 
-console.log('process.env.TESTFIRST', process.env.TESTFIRST);
-
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
