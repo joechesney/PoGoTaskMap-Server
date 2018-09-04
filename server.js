@@ -31,6 +31,9 @@ app.use(bodyParser.json());
 //     else if(result) console.log('result  ',result);
 //   });
 // }, 5000);
+.aoo.get('/', (req, res, next) => {
+  res.json({"hello": "there"});
+})
 
 app.get('/rewardSearch/', (req, res, next) => {
   // This basically does what the getPokestops endpoint does, except
