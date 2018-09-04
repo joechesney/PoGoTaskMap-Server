@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 //     else if(result) console.log('result  ',result);
 //   });
 // }, 5000);
-.aoo.get('/', (req, res, next) => {
+app.get('/', (req, res, next) => {
   res.json({"hello": "there"});
 })
 
