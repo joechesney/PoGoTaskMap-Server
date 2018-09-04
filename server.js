@@ -21,16 +21,15 @@ connection.connect((err) => {
 
 const app = express();
 app.use(cors());
-// app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// setInterval(function () {
-//   connection.query('SELECT 1', function(err, result){
-//     if(err) console.log('err  ',err);
-//     else if(result) console.log('result  ',result);
-//   });
-// }, 5000);
+setInterval(function () {
+  connection.query('SELECT 1', function(err, result){
+    if(err) console.log('err  ',err);
+    else if(result) console.log('result  ',result);
+  });
+}, 5000);
 app.get('/', (req, res, next) => {
   res.json({"hello": "there"});
 })
