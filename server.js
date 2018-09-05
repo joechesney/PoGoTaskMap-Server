@@ -24,12 +24,15 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// This is used to keep the server alive
 setInterval(function () {
   connection.query('SELECT 1', function(err, result){
     if(err) console.log('err  ',err);
     else if(result) console.log('result  ',result);
   });
 }, 5000);
+
+// A test endpoint
 app.get('/', (req, res, next) => {
   res.json({"hello": "there"});
 })
@@ -171,7 +174,6 @@ app.post('/addNewPokestop', (req, res, next) => {
 
 app.post('/changeRequest', (req, res, next) => {
   // This endpoint will send me an email with any requested changes
-  // console.log('req :', req.body);
   const server_secrets = require('./server_secrets.js');
   console.log('server_secrets',server_secrets);
   const transporter = nodemailer.createTransport({
