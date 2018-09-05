@@ -174,18 +174,16 @@ app.post('/addNewPokestop', (req, res, next) => {
 
 app.post('/changeRequest', (req, res, next) => {
   // This endpoint will send me an email with any requested changes
-  const server_secrets = require('./server_secrets.js');
-  console.log('server_secrets',server_secrets);
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: `${server_secrets.literallyNothing}`,
-      pass: `${server_secrets.randomVariable}`
+      user: `${process.env.EMAIL_DESTINATION}`,
+      pass: `${process.env.EMAIL_KEY}`
     }
   });
   const mailOptions = {
     from: `${req.body.userEmail}`,
-    to: `${server_secrets.literallyNothing}`,
+    to: `${process.env.EMAIL_DESTINATION}`,
     subject: "CHANGE REQUEST FROM NASHQUESTMAP",
     html: `
     Message from some dear Pokemon friend named ${req.body.userEmail},<br>
