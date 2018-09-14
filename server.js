@@ -126,8 +126,7 @@ app.post('/addTask/:id', (req, res) => {
     if (err) {
       throw err;
     } else {
-      console.log("Number of records inserted: " + result.affectedRows);
-      console.log('result: ',result);
+      // console.log('result: ',result);
       res.send({
         insertId: result.insertId,
         serverStatus: result.serverStatus,
@@ -165,8 +164,8 @@ app.post('/addNewPokestop', (req, res, next) => {
       if (err) {
         throw err;
       } else {
+        // console.log("result", result);
         res.sendStatus(200);
-        console.log("Number of records inserted: " + result.affectedRows);
       }
     });
   }
@@ -191,12 +190,11 @@ app.post('/changeRequest', (req, res, next) => {
     <br>
     ${req.body.changesRequested}`
   };
-  console.log('mailOptions',mailOptions);
   transporter.sendMail(mailOptions, function(err, info){
     if(err){
       next(err);
     } else {
-      console.log('info: ',info);
+      // console.log('info: ',info);
       res.sendStatus(200);
     }
   })
@@ -212,6 +210,5 @@ app.use((err, req, res, next ) => {
 });
 
 app.listen(process.env.PORT, () => {
-  // https://pure-shelf-57001.herokuapp.com/
   console.log(`listening on http://localhost:${process.env.PORT}`);
 });
