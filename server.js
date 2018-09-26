@@ -100,7 +100,6 @@ app.get('/getPokestops', (req, res, next) => {
     }
   })
 })
-
 app.post('/addTask/:id', (req, res) => {
   // This route sends a user-submitted task as a POST request
   // It gives the server the pokestop_id as a req.param so i can use that as
@@ -110,7 +109,6 @@ app.post('/addTask/:id', (req, res) => {
       requirements,
       reward,
       pokestop_id,
-      task_date_string,
       task_date_and_submission_time,
       task_date_end_time
     )
@@ -118,7 +116,6 @@ app.post('/addTask/:id', (req, res) => {
       '${req.body.requirements}',
       '${req.body.reward}',
       ${req.body.pokestop_id},
-      '${req.body.task_date_string}',
       NOW(),
       CURRENT_DATE() + INTERVAL 1 DAY
     )`;
