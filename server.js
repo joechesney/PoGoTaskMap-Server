@@ -158,7 +158,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
-        '${req.body.name}',
+        ${req.body.name},
         ${req.body.latitude},
         ${req.body.longitude},
         NOW()
