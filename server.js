@@ -20,7 +20,7 @@ connection.connect((err) => {
 });
 
 const app = express();
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -33,9 +33,14 @@ setInterval(function () {
   });
 }, 5000);
 
+let corsOptions = {
+  origin: 'https://pogotaskmap.firebaseapp.com',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 // A test endpoint
 app.get('/', (req, res, next) => {
-  res.json({ "hello": "there" });
+  res.json({ "hello": "there", "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
 app.get('/rewardSearch/', (req, res, next) => {
@@ -125,7 +130,6 @@ app.post('/addTask/:id', (req, res) => {
     if (err) {
       throw err;
     } else {
-      // console.log('result: ',result);
       res.send({
         insertId: result.insertId,
         serverStatus: result.serverStatus,
@@ -135,7 +139,7 @@ app.post('/addTask/:id', (req, res) => {
   });
 });
 
-app.post('/addNewPokestop', (req, res, next) => {
+app.post('/addNewPokestop', cors(corsOptions), (req, res, next) => {
   // This endpoint sends a user-submitted pokestop as a POST request
   // It first checks to make sure the lat/long values being sent
   // are within the boundaries of the area I have set up
@@ -163,7 +167,6 @@ app.post('/addNewPokestop', (req, res, next) => {
       if (err) {
         throw err;
       } else {
-        // console.log("result", result);
         res.sendStatus(200);
       }
     });
@@ -193,7 +196,6 @@ app.post('/changeRequest', (req, res, next) => {
     if (err) {
       next(err);
     } else {
-      // console.log('info: ',info);
       res.sendStatus(200);
     }
   });
@@ -201,7 +203,6 @@ app.post('/changeRequest', (req, res, next) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  // err = err || new Error("Internal Server Error");
   if (err) { console.log(err) }
   res.status(err.status || 500);
   res.json({ error: err.message });
