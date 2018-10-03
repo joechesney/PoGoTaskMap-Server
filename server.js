@@ -20,30 +20,31 @@ connection.connect((err) => {
 });
 
 const app = express();
+app.options('*', cors());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // This is used to keep the server alive
 setInterval(function () {
-  connection.query('SELECT 1', function(err, result){
-    if(err) console.log('err  ',err);
-    else if(result) console.log('result  ',result);
+  connection.query('SELECT 1', function (err, result) {
+    if (err) console.log('err  ', err);
+    else if (result) console.log('result  ', result);
   });
 }, 5000);
 
 // A test endpoint
 app.get('/', (req, res, next) => {
-  res.json({"hello": "there"});
-})
+  res.json({ "hello": "there" });
+});
 
 app.get('/rewardSearch/', (req, res, next) => {
   // This basically does what the getPokestops endpoint does, except
-  // that it is a much narrower result
+  //   that it is a much narrower result
   // I am using the LIKE keyword for the mysql statement,
-  // and surrounding it by the % wildcard character, which
-  // can retrieve slowly if my database gets huge.
-  // an alternative keyword would be INSTR, or LOCATE, if need be
+  //   and surrounding it by the % wildcard character, which
+  //   can retrieve slowly if my database gets huge.
+  //   an alternative keyword would be INSTR, or LOCATE, if need be
 
   connection.query(`
   SELECT
@@ -62,14 +63,15 @@ app.get('/rewardSearch/', (req, res, next) => {
   LEFT JOIN tasks
   ON tasks.pokestop_id = pokestops.id
   AND tasks.task_date_end_time > NOW()
-  `, (err, pokestops) =>{
-    if (err) {
-      next(err);
-    } else {
-      res.send(pokestops);
-    }
-  })
-})
+  `, (err, pokestops) => {
+      if (err) {
+        next(err);
+      } else {
+        res.send(pokestops);
+      }
+    });
+});
+
 app.get('/getPokestops', (req, res, next) => {
   // Getting the pokestops also gets the active tasks and gives the pokestops
   // the relationship with the task and also the property on the same object
@@ -77,7 +79,6 @@ app.get('/getPokestops', (req, res, next) => {
   connection.query(`
   SELECT
   pokestops.*,
-
     tasks.requirements,
     tasks.reward,
     tasks.pokestop_id,
@@ -92,14 +93,15 @@ app.get('/getPokestops', (req, res, next) => {
   LEFT JOIN tasks
   ON tasks.pokestop_id = pokestops.id
   AND tasks.task_date_end_time > NOW()
-  `, (err, pokestops) =>{
-    if (err) {
-      next(err);
-    } else {
-      res.send(pokestops);
-    }
-  })
-})
+  `, (err, pokestops) => {
+      if (err) {
+        next(err);
+      } else {
+        res.send(pokestops);
+      }
+    });
+});
+
 app.post('/addTask/:id', (req, res) => {
   // This route sends a user-submitted task as a POST request
   // It gives the server the pokestop_id as a req.param so i can use that as
@@ -119,7 +121,7 @@ app.post('/addTask/:id', (req, res) => {
       NOW(),
       CURRENT_DATE() + INTERVAL 1 DAY
     )`;
-    connection.query(sql, function (err, result) {
+  connection.query(sql, function (err, result) {
     if (err) {
       throw err;
     } else {
@@ -130,8 +132,8 @@ app.post('/addTask/:id', (req, res) => {
         pokestopId: req.body.pokestop_id
       });
     }
-  })
-})
+  });
+});
 
 app.post('/addNewPokestop', (req, res, next) => {
   // This endpoint sends a user-submitted pokestop as a POST request
@@ -145,7 +147,7 @@ app.post('/addNewPokestop', (req, res, next) => {
   const southmostLocation = [34.56341006121154, -86.60234843420953]; // below Huntsville
 
   // If the submission is not within these boundaries, it sends back an error
-  if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1], req.body.longitude > eastmostLocation[1]){
+  if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1] || req.body.longitude > eastmostLocation[1]) {
     let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
@@ -166,7 +168,7 @@ app.post('/addNewPokestop', (req, res, next) => {
       }
     });
   }
-})
+});
 
 app.post('/changeRequest', (req, res, next) => {
   // This endpoint will send me an email with any requested changes
@@ -187,22 +189,21 @@ app.post('/changeRequest', (req, res, next) => {
     <br>
     ${req.body.changesRequested}`
   };
-  transporter.sendMail(mailOptions, function(err, info){
-    if(err){
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) {
       next(err);
     } else {
       // console.log('info: ',info);
       res.sendStatus(200);
     }
-  })
-
-})
+  });
+});
 
 // Error handler
-app.use((err, req, res, next ) => {
+app.use((err, req, res, next) => {
   // err = err || new Error("Internal Server Error");
-  if (err) { console.log(err)}
-  res.status( err.status || 500);
+  if (err) { console.log(err) }
+  res.status(err.status || 500);
   res.json({ error: err.message });
 });
 
