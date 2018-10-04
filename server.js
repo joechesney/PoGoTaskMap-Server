@@ -161,7 +161,7 @@ app.post('/addNewPokestop', (req, res, next) => {
         "${req.body.name}",
         ${req.body.latitude},
         ${req.body.longitude},
-        NOW()
+        NOW() - INTERVAL 5 HOUR
       )`;
     connection.query(sql, function (err, result) {
       if (err) {
