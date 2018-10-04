@@ -67,7 +67,7 @@ app.get('/rewardSearch/', (req, res, next) => {
   FROM pokestops
   LEFT JOIN tasks
   ON tasks.pokestop_id = pokestops.id
-  AND tasks.task_date_end_time > NOW()
+  AND tasks.task_date_end_time > NOW() - INTERVAL 5 HOUR
   `, (err, pokestops) => {
       if (err) {
         next(err);
@@ -120,11 +120,11 @@ app.post('/addTask/:id', (req, res) => {
       task_date_end_time
     )
     VALUES (
-      '${req.body.requirements}',
-      '${req.body.reward}',
+      "${req.body.requirements}",
+      "${req.body.reward}",
       ${req.body.pokestop_id},
-      NOW(),
-      CURRENT_DATE() + INTERVAL 1 DAY
+      NOW() - INTERVAL 5 HOUR,
+      CURRENT_DATE() - INTERVAL 5 HOUR + INTERVAL 1 DAY
     )`;
   connection.query(sql, function (err, result) {
     if (err) {
