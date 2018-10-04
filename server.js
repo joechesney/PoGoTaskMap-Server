@@ -125,7 +125,7 @@ app.post('/addTask/:id', (req, res) => {
       "${req.body.reward}",
       ${req.body.pokestop_id},
       NOW() - INTERVAL 5 HOUR,
-      DATE(DATE_ADD(NOW() - INTERVAL 5 HOUR), INTERVAL 1 DAY)
+      DATE(NOW() - INTERVAL 5 HOUR + INTERVAL 1 DAY)
     )`;
   connection.query(sql, function (err, result) {
     if (err) {
