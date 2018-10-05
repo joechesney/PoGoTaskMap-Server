@@ -107,6 +107,22 @@ app.get('/getPokestops', (req, res, next) => {
       }
     });
 });
+app.get('/getNewestPokestop/:pokestopId', (req, res, next) => {
+  // Getting the pokestops also gets the active tasks and gives the pokestops
+  // the relationship with the task and also the property on the same object
+
+  connection.query(`
+  SELECT pokestops.*
+  FROM pokestops
+  WHERE pokestops.id = ${req.params.pokestopId}
+  `, (err, pokestop) => {
+      if (err) {
+        next(err);
+      } else {
+        res.send(pokestop);
+      }
+    });
+});
 
 app.post('/addTask/:id', (req, res) => {
   // This route sends a user-submitted task as a POST request
