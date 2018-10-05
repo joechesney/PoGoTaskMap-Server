@@ -184,7 +184,7 @@ app.post('/addNewPokestop', (req, res, next) => {
       if (err) {
         throw err;
       } else {
-        res.sendStatus(200);
+        res.send(result);
       }
     });
   }
