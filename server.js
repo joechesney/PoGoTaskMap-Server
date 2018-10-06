@@ -124,10 +124,11 @@ app.get('/getNewestPokestop/:pokestopId', (req, res, next) => {
     });
 });
 
-app.post('/addTask/:id', (req, res) => {
+app.post('/addTask/:id', (req, res, next) => {
   // This route sends a user-submitted task as a POST request
   // It gives the server the pokestop_id as a req.param so i can use that as
   // the tasks associated pokestop in the database
+  if ( +req.params.id !== +req.body.pokestop_id) next(err)
   const sql = `
     INSERT INTO tasks (
       requirements,
@@ -184,7 +185,7 @@ app.post('/addNewPokestop', (req, res, next) => {
       if (err) {
         throw err;
       } else {
-        res.send(result);
+        res.send(200);
       }
     });
   }
