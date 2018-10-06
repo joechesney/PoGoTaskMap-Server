@@ -113,6 +113,11 @@ app.get('/getNewestPokestop/:pokestopId', (req, res, next) => {
 
   connection.query(`
   SELECT pokestops.*
+  CASE
+    WHEN tasks.task_date_end_time > NOW()
+    THEN 'true'
+    ELSE 'false'
+    END active
   FROM pokestops
   WHERE pokestops.id = ${req.params.pokestopId}
   `, (err, pokestop) => {
