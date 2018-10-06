@@ -203,7 +203,11 @@ app.post('/addNewPokestop', (req, res, next) => {
       if (err) {
         throw err;
       } else {
-        res.send(200);
+        res.send({
+          insertId: result.insertId,
+          serverStatus: result.serverStatus,
+          pokestopId: result.insertId
+        });
       }
     });
   }
