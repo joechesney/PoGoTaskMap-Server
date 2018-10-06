@@ -91,14 +91,14 @@ app.get('/getPokestops', (req, res, next) => {
     tasks.task_date_end_time,
     tasks.id AS task_id,
     CASE
-      WHEN tasks.task_date_end_time > NOW()
+      WHEN tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
       THEN 'true'
       ELSE 'false'
       END active
   FROM pokestops
   LEFT JOIN tasks
   ON tasks.pokestop_id = pokestops.id
-  AND tasks.task_date_end_time > NOW()
+  AND tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
   `, (err, pokestops) => {
       if (err) {
         next(err);
@@ -107,13 +107,27 @@ app.get('/getPokestops', (req, res, next) => {
       }
     });
 });
-app.get('/getNewestPokestop/:pokestopId', (req, res, next) => {
+app.get('/getOnePokestop/:pokestopId', (req, res, next) => {
   // Getting the pokestops also gets the active tasks and gives the pokestops
   // the relationship with the task and also the property on the same object
 
   connection.query(`
-  SELECT pokestops.*
+  SELECT
+  pokestops.*,
+    tasks.requirements,
+    tasks.reward,
+    tasks.pokestop_id,
+    tasks.task_date_end_time,
+    tasks.id AS task_id,
+    CASE
+      WHEN tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
+      THEN 'true'
+      ELSE 'false'
+      END active
   FROM pokestops
+  LEFT JOIN tasks
+  ON tasks.pokestop_id = pokestops.id
+  AND tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
   WHERE pokestops.id = ${req.params.pokestopId}
   `, (err, pokestop) => {
       if (err) {
