@@ -134,7 +134,7 @@ app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
         next(err);
       } else {
         res.send({
-          insertId: result.insertId,
+          result,
           serverStatus: result.serverStatus,
           pokestopId: req.params.pokestop_id
         });
