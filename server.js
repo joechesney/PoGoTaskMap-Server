@@ -107,7 +107,7 @@ app.get('/getPokestops', (req, res, next) => {
       }
     });
 });
-app.get('/getOnePokestop/:pokestopId', (req, res, next) => {
+app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
   // Getting the pokestops also gets the active tasks and gives the pokestops
   // the relationship with the task and also the property on the same object
 
@@ -128,21 +128,25 @@ app.get('/getOnePokestop/:pokestopId', (req, res, next) => {
   LEFT JOIN tasks
   ON tasks.pokestop_id = pokestops.id
   AND tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
-  WHERE pokestops.id = ${req.params.pokestopId}
-  `, (err, pokestop) => {
+  WHERE pokestops.id = ${req.params.pokestop_id}
+  `, (err, result) => {
       if (err) {
         next(err);
       } else {
-        res.send(pokestop);
+        res.send({
+          insertId: result.insertId,
+          serverStatus: result.serverStatus,
+          pokestopId: req.params.pokestop_id
+        });
       }
     });
 });
 
-app.post('/addTask/:id', (req, res, next) => {
+app.post('/addTask/:pokestop_id', (req, res, next) => {
   // This route sends a user-submitted task as a POST request
   // It gives the server the pokestop_id as a req.param so i can use that as
   // the tasks associated pokestop in the database
-  if ( +req.params.id !== +req.body.pokestop_id) next(err)
+  if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(err)
   const sql = `
     INSERT INTO tasks (
       requirements,
