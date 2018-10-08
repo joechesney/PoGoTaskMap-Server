@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PW,
   database: process.env.DB_DATABASE_NAME,
-  insecureAuth: true
+  // insecureAuth: true
 });
 
 connection.connect((err) => {
@@ -44,7 +44,7 @@ app.get('/rewardSearch/', (req, res, next) => {
   //   and surrounding it by the % wildcard character, which
   //   can retrieve slowly if my database gets huge.
   //   an alternative keyword would be INSTR, or LOCATE, if need be
-  let rewardQuery = sqlstring.escape('%' + req.query.task_reward + '%')
+  const rewardQuery = sqlstring.escape('%' + req.query.task_reward + '%')
   connection.query(`
   SELECT
   pokestops.*,
@@ -182,10 +182,10 @@ app.post('/addNewPokestop', (req, res, next) => {
 
   // If the submission is not within these boundaries, it sends back an error
   if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1] || req.body.longitude > eastmostLocation[1]) {
-    let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
+    const locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
-    let pokestopName = sqlstring.escape(req.body.name)
+    const pokestopName = sqlstring.escape(req.body.name)
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
