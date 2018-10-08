@@ -190,10 +190,11 @@ app.post('/addNewPokestop', (req, res, next) => {
     let locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
+    let pokestopName = sqlstring.escape(req.body.name)
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
-        "${req.body.name}",
+        "${pokestopName}",
         ${req.body.latitude},
         ${req.body.longitude},
         NOW() - INTERVAL 5 HOUR
