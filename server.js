@@ -39,9 +39,11 @@ app.get('/', (req, res, next) => {
     "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
+
 /***** GET POKESTOPS (GET) ******/
 // -Receives: Nothing
 // -Returns: Array of objects
+// -SQL: SELECT
 // Gets ALL pokestops in the database as well as any associated tasks
 // Attaches associated tasks to the pokestop object before sending it to client
 app.get('/getPokestops', (req, res, next) => {
@@ -68,9 +70,11 @@ app.get('/getPokestops', (req, res, next) => {
     });
 });
 
+
 /***** GET ONE POKESTOP (GET) ******/
 // -Receives: Request Parameter of pokestop_id
 // -Returns: Array of object(s). Should always be just one object.
+// -SQL: SELECT
 // Gets ALL pokestops where the pokestop_id matches row id as well as any associated tasks
 // Attaches associated tasks to the pokestop object before sending it to client
 app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
@@ -94,22 +98,18 @@ app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
   WHERE pokestops.id = ${req.params.pokestop_id}
   `, (err, result) => {
       if (err) next(err);
-      else {
-        res.send({
-          pokestop: result,
-          serverStatus: 200
-        });
-      }
+      else res.send(result);
     });
 });
 
+
 /***** REWARD SEARCH (GET) *****/
-// This basically does what the getPokestops endpoint does, except
-//   that it is a much narrower result
-// I am using the LIKE keyword for the mysql statement,
-//   and surrounding it with the '%' wildcard character, which
-//   can retrieve slowly if my database gets huge.
-//   an alternative keyword would be INSTR, or LOCATE, if need be
+// -Receives: Url query with 1 property: task_reward (string)
+// -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
+// -SQL: SELECT
+// I am using the LIKE keyword for the mysql statement, and surrounding it
+// with the '%' wildcard character, which can retrieve slowly if my
+// database gets huge. An alternative keyword would be INSTR, or LOCATE, if need be
 app.get('/rewardSearch/', (req, res, next) => {
   const rewardQuery = escape('%' + req.query.task_reward + '%')
   connection.query(`
@@ -135,9 +135,11 @@ app.get('/rewardSearch/', (req, res, next) => {
     });
 });
 
+
 /***** ADD TASK (POST) ******/
 // -Receives: Object with 3 properties: pokestop_id (integer), requirements (string), reward (string)
 // -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
+// -SQL: INSERT
 // Sends a POST request with the new task object
 // pokestop_id is sent as a req.param AND an object property so i can make sure they match
 app.post('/addTask/:pokestop_id', (req, res, next) => {
@@ -175,6 +177,7 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
 /***** ADD POKESTOP (POST) ******/
 // -Receives: Object with 3 properties: name (string), latitude (float), longitude (float)
 // -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
+// -SQL: INSERT
 // This endpoint sends a user-submitted pokestop as a POST request
 // It first checks to make sure the lat/long values being sent
 // are within the boundaries of the area I have set up
@@ -215,6 +218,11 @@ app.post('/addNewPokestop', (req, res, next) => {
   }
 });
 
+/***** CHANGE REQUEST (POST) ******/
+// -Receives: Object with 3 properties: userEmail (string), changesRequested (string)
+// -Returns: Request status
+// -SQL: None
+// Sends Site owner an email with user-requested changes
 app.post('/changeRequest', (req, res, next) => {
   // This endpoint will send me an email with any requested changes
   const transporter = nodemailer.createTransport({
@@ -235,19 +243,14 @@ app.post('/changeRequest', (req, res, next) => {
     ${req.body.changesRequested}`
   };
   transporter.sendMail(mailOptions, function (err, info) {
-    if (err) {
-      next(err);
-    } else {
-      res.sendStatus(200);
-    }
+    if (err) next(err);
+    else res.send(info);
   });
 });
 
 // Error handler
-app.use((err, req, res, next) => {
-  if (err) { console.log(err) }
-  res.status(err.status || 500);
-  res.json({ error: err.message });
+app.use((err, req, res) => {
+  if (err) res.json({ error: err, request: req });
 });
 
 app.listen(process.env.PORT, () => {
