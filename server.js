@@ -135,13 +135,12 @@ app.get('/rewardSearch/', (req, res, next) => {
     });
 });
 
-/***** ADD TASK (POST)******/
+/***** ADD TASK (POST) ******/
 // -Receives: Object with 3 properties: pokestop_id (integer), requirements (string), reward (string)
-// -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestop_id (integer)
+// -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
 // Sends a POST request with the new task object
 // pokestop_id is sent as a req.param AND an object property so i can make sure they match
 app.post('/addTask/:pokestop_id', (req, res, next) => {
-
   if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(new Error("pokestop_id does not match Pokestop"))
   const taskRequirements = escape(req.body.requirements);
   const taskReward = escape(req.body.reward);
@@ -173,21 +172,26 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
   });
 });
 
+/***** ADD POKESTOP (POST) ******/
+// -Receives: Object with 3 properties: name (string), latitude (float), longitude (float)
+// -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
+// This endpoint sends a user-submitted pokestop as a POST request
+// It first checks to make sure the lat/long values being sent
+// are within the boundaries of the area I have set up
 app.post('/addNewPokestop', (req, res, next) => {
-  // This endpoint sends a user-submitted pokestop as a POST request
-  // It first checks to make sure the lat/long values being sent
-  // are within the boundaries of the area I have set up
 
-  // These are the boundaries for pokesotp submission. They form a square around niddle TN
+  // These are the boundaries for pokestop submission. They form a square around middle TN
   const westmostLocation = [36.073201300051345, -87.39700190267196]; // west past Dickson
   const northmostLocation = [36.64965136535208, -86.79136861074458]; // Kentucky border
   const eastmostLocation = [35.95737315896857, -83.47954587059279]; // east past Knoxville
   const southmostLocation = [34.56341006121154, -86.60234843420953]; // below Huntsville
 
   // If the submission is not within these boundaries, it sends back an error
-  if (req.body.latitude < southmostLocation[0] || req.body.latitude > northmostLocation[0] || req.body.longitude < westmostLocation[1] || req.body.longitude > eastmostLocation[1]) {
-    const locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
-    next(locationError);
+  if (req.body.latitude < southmostLocation[0] ||
+      req.body.latitude > northmostLocation[0] ||
+      req.body.longitude < westmostLocation[1] ||
+      req.body.longitude > eastmostLocation[1]) {
+    next(new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a location in middle TN."));
   } else {
     const pokestopName = escape(req.body.name)
     const sql = `
@@ -199,9 +203,8 @@ app.post('/addNewPokestop', (req, res, next) => {
         NOW() - INTERVAL 5 HOUR
       )`;
     connection.query(sql, function (err, result) {
-      if (err) {
-        throw err;
-      } else {
+      if (err) next(err)
+      else {
         res.send({
           insertId: result.insertId,
           serverStatus: result.serverStatus,
