@@ -32,20 +32,21 @@ app.use(function(req, res, next) {
   next();
 });
 
-// A base endpoint
+// A home endpoint
 app.get('/', (req, res, next) => {
   res.json({
     "hello": "there",
     "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
+/***** REWARD SEARCH *****/
+// This basically does what the getPokestops endpoint does, except
+//   that it is a much narrower result
+// I am using the LIKE keyword for the mysql statement,
+//   and surrounding it with the '%' wildcard character, which
+//   can retrieve slowly if my database gets huge.
+//   an alternative keyword would be INSTR, or LOCATE, if need be
 app.get('/rewardSearch/', (req, res, next) => {
-  // This basically does what the getPokestops endpoint does, except
-  //   that it is a much narrower result
-  // I am using the LIKE keyword for the mysql statement,
-  //   and surrounding it with the '%' wildcard character, which
-  //   can retrieve slowly if my database gets huge.
-  //   an alternative keyword would be INSTR, or LOCATE, if need be
   const rewardQuery = escape('%' + req.query.task_reward + '%')
   connection.query(`
   SELECT
@@ -65,11 +66,8 @@ app.get('/rewardSearch/', (req, res, next) => {
   ON tasks.pokestop_id = pokestops.id
   AND tasks.task_date_end_time > NOW() - INTERVAL 5 HOUR
   `, (err, pokestops) => {
-      if (err) {
-        next(err);
-      } else {
-        res.send(pokestops);
-      }
+      if (err) next(err);
+      else res.send(pokestops);
     });
 });
 
