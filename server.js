@@ -5,6 +5,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const sqlstring = require('sqlstring');
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -61,7 +62,7 @@ app.get('/rewardSearch/', (req, res, next) => {
     tasks.task_date_end_time,
     tasks.id AS task_id,
     CASE
-      WHEN tasks.reward LIKE '%${req.query.task_reward}%'
+      WHEN tasks.reward LIKE '%${sqlstring(req.query.task_reward)}%'
       THEN 'true'
       ELSE 'false'
       END active
