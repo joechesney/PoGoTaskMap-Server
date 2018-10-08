@@ -139,6 +139,8 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
   // It gives the server the pokestop_id as a req.param so i can use that as
   // the tasks associated pokestop in the database
   if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(err)
+  const taskRequirements = sqlstring.escape(req.body.requirements);
+  const taskReward = sqlstring.escape(req.body.reward);
   const sql = `
     INSERT INTO tasks (
       requirements,
@@ -148,8 +150,8 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
       task_date_end_time
     )
     VALUES (
-      "${req.body.requirements}",
-      "${req.body.reward}",
+      ${taskRequirements},
+      ${taskReward},
       ${req.body.pokestop_id},
       NOW() - INTERVAL 5 HOUR,
       DATE(NOW() - INTERVAL 5 HOUR + INTERVAL 1 DAY)
