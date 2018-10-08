@@ -21,24 +21,22 @@ connection.connect((err) => {
 });
 
 const app = express();
-app.options('*', cors());
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.options('*', cors());
+// app.use(cors());
 
 // CORS use route
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  const allowedOrigins = ['http://127.0.0.1:8080', 'https://pogotaskmap.firebaseapp.com'];
+  const origin = req.headers.origin;
+  if(allowedOrigins.indexOf(origin) > -1){
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET,POST');
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://pogotaskmap.firebaseapp.com");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // A home endpoint (GET)
 app.get('/', (req, res, next) => {
