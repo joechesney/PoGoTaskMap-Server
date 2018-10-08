@@ -32,14 +32,14 @@ app.use(function(req, res, next) {
   next();
 });
 
-// A home endpoint
+// A home endpoint (GET)
 app.get('/', (req, res, next) => {
   res.json({
     "hello": "there",
     "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
-/***** GET POKESTOPS ******/
+/***** GET POKESTOPS (GET) ******/
 // -Receives: Nothing
 // -Returns: Array of objects
 // Gets ALL pokestops in the database as well as any associated tasks
@@ -68,7 +68,7 @@ app.get('/getPokestops', (req, res, next) => {
     });
 });
 
-/***** GET ONE POKESTOP ******/
+/***** GET ONE POKESTOP (GET) ******/
 // -Receives: Request Parameter of pokestop_id
 // -Returns: Array of object(s). Should always be just one object.
 // Gets ALL pokestops where the pokestop_id matches row id as well as any associated tasks
@@ -103,7 +103,7 @@ app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
     });
 });
 
-/***** REWARD SEARCH *****/
+/***** REWARD SEARCH (GET) *****/
 // This basically does what the getPokestops endpoint does, except
 //   that it is a much narrower result
 // I am using the LIKE keyword for the mysql statement,
@@ -135,11 +135,14 @@ app.get('/rewardSearch/', (req, res, next) => {
     });
 });
 
+/***** ADD TASK (POST)******/
+// -Receives: Object with 3 properties: pokestop_id (integer), requirements (string), reward (string)
+// -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestop_id (integer)
+// Sends a POST request with the new task object
+// pokestop_id is sent as a req.param AND an object property so i can make sure they match
 app.post('/addTask/:pokestop_id', (req, res, next) => {
-  // This route sends a user-submitted task as a POST request
-  // It gives the server the pokestop_id as a req.param so i can use that as
-  // the tasks associated pokestop in the database
-  if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(err)
+
+  if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(new Error("pokestop_id does not match Pokestop"))
   const taskRequirements = escape(req.body.requirements);
   const taskReward = escape(req.body.reward);
   const sql = `
@@ -159,7 +162,7 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
     )`;
   connection.query(sql, function (err, result) {
     if (err) {
-      throw err;
+      next(err);
     } else {
       res.send({
         insertId: result.insertId,
