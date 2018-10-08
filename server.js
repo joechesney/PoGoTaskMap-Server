@@ -32,16 +32,18 @@ app.use(function(req, res, next) {
   next();
 });
 
-// A test endpoint
+// A base endpoint
 app.get('/', (req, res, next) => {
-  res.json({ "hello": "there", "this site is available at": "https://pogotaskmap.firebaseapp.com" });
+  res.json({
+    "hello": "there",
+    "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
 app.get('/rewardSearch/', (req, res, next) => {
   // This basically does what the getPokestops endpoint does, except
   //   that it is a much narrower result
   // I am using the LIKE keyword for the mysql statement,
-  //   and surrounding it by the % wildcard character, which
+  //   and surrounding it with the '%' wildcard character, which
   //   can retrieve slowly if my database gets huge.
   //   an alternative keyword would be INSTR, or LOCATE, if need be
   const rewardQuery = sqlstring.escape('%' + req.query.task_reward + '%')
