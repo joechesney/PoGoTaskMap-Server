@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
-const sqlstring = require('sqlstring');
+const { escape } = require('sqlstring');
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -46,7 +46,7 @@ app.get('/rewardSearch/', (req, res, next) => {
   //   and surrounding it with the '%' wildcard character, which
   //   can retrieve slowly if my database gets huge.
   //   an alternative keyword would be INSTR, or LOCATE, if need be
-  const rewardQuery = sqlstring.escape('%' + req.query.task_reward + '%')
+  const rewardQuery = escape('%' + req.query.task_reward + '%')
   connection.query(`
   SELECT
   pokestops.*,
@@ -141,8 +141,8 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
   // It gives the server the pokestop_id as a req.param so i can use that as
   // the tasks associated pokestop in the database
   if ( +req.params.pokestop_id !== +req.body.pokestop_id) next(err)
-  const taskRequirements = sqlstring.escape(req.body.requirements);
-  const taskReward = sqlstring.escape(req.body.reward);
+  const taskRequirements = escape(req.body.requirements);
+  const taskReward = escape(req.body.reward);
   const sql = `
     INSERT INTO tasks (
       requirements,
@@ -187,7 +187,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     const locationError = new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a pokestop in middle TN.");
     next(locationError);
   } else {
-    const pokestopName = sqlstring.escape(req.body.name)
+    const pokestopName = escape(req.body.name)
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
