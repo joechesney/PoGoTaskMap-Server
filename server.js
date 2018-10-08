@@ -39,42 +39,10 @@ app.get('/', (req, res, next) => {
     "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
-/***** REWARD SEARCH *****/
-// This basically does what the getPokestops endpoint does, except
-//   that it is a much narrower result
-// I am using the LIKE keyword for the mysql statement,
-//   and surrounding it with the '%' wildcard character, which
-//   can retrieve slowly if my database gets huge.
-//   an alternative keyword would be INSTR, or LOCATE, if need be
-app.get('/rewardSearch/', (req, res, next) => {
-  const rewardQuery = escape('%' + req.query.task_reward + '%')
-  connection.query(`
-  SELECT
-  pokestops.*,
-    tasks.requirements,
-    tasks.reward,
-    tasks.pokestop_id,
-    tasks.task_date_end_time,
-    tasks.id AS task_id,
-    CASE
-      WHEN tasks.reward LIKE ${rewardQuery}
-      THEN 'true'
-      ELSE 'false'
-      END active
-  FROM pokestops
-  LEFT JOIN tasks
-  ON tasks.pokestop_id = pokestops.id
-  AND tasks.task_date_end_time > NOW() - INTERVAL 5 HOUR
-  `, (err, pokestops) => {
-      if (err) next(err);
-      else res.send(pokestops);
-    });
-});
-
+/***** GET POKESTOPS ******/
+// Gets ALL pokestops in the database as well as any associated tasks
+// Attaches associated tasks to the pokestop object before sending it to client
 app.get('/getPokestops', (req, res, next) => {
-  // Getting the pokestops also gets the active tasks and gives the pokestops
-  // the relationship with the task and also the property on the same object
-
   connection.query(`
   SELECT
   pokestops.*,
@@ -93,13 +61,11 @@ app.get('/getPokestops', (req, res, next) => {
   ON tasks.pokestop_id = pokestops.id
   AND tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
   `, (err, pokestops) => {
-      if (err) {
-        next(err);
-      } else {
-        res.send(pokestops);
-      }
+      if (err) next(err);
+      else res.send(pokestops);
     });
 });
+
 app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
   // Getting the pokestops also gets the active tasks and gives the pokestops
   // the relationship with the task and also the property on the same object
@@ -131,6 +97,38 @@ app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
           serverStatus: 200
         });
       }
+    });
+});
+
+/***** REWARD SEARCH *****/
+// This basically does what the getPokestops endpoint does, except
+//   that it is a much narrower result
+// I am using the LIKE keyword for the mysql statement,
+//   and surrounding it with the '%' wildcard character, which
+//   can retrieve slowly if my database gets huge.
+//   an alternative keyword would be INSTR, or LOCATE, if need be
+app.get('/rewardSearch/', (req, res, next) => {
+  const rewardQuery = escape('%' + req.query.task_reward + '%')
+  connection.query(`
+  SELECT
+  pokestops.*,
+    tasks.requirements,
+    tasks.reward,
+    tasks.pokestop_id,
+    tasks.task_date_end_time,
+    tasks.id AS task_id,
+    CASE
+      WHEN tasks.reward LIKE ${rewardQuery}
+      THEN 'true'
+      ELSE 'false'
+      END active
+  FROM pokestops
+  LEFT JOIN tasks
+  ON tasks.pokestop_id = pokestops.id
+  AND tasks.task_date_end_time > NOW() - INTERVAL 5 HOUR
+  `, (err, pokestops) => {
+      if (err) next(err);
+      else res.send(pokestops);
     });
 });
 
