@@ -194,7 +194,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     const sql = `
       INSERT INTO pokestops (name, latitude, longitude, date_submitted)
       VALUES (
-        "${pokestopName}",
+        ${pokestopName},
         ${req.body.latitude},
         ${req.body.longitude},
         NOW() - INTERVAL 5 HOUR
