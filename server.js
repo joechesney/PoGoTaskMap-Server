@@ -32,14 +32,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-// This is used to keep the server alive
-setInterval(function () {
-  connection.query('SELECT 1', function (err, result) {
-    if (err) console.log('err  ', err);
-    else if (result) console.log('result  ', result);
-  });
-}, 5000);
-
 // A test endpoint
 app.get('/', (req, res, next) => {
   res.json({ "hello": "there", "this site is available at": "https://pogotaskmap.firebaseapp.com" });
