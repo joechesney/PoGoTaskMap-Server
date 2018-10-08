@@ -52,7 +52,7 @@ app.get('/rewardSearch/', (req, res, next) => {
   //   and surrounding it by the % wildcard character, which
   //   can retrieve slowly if my database gets huge.
   //   an alternative keyword would be INSTR, or LOCATE, if need be
-
+  let rewardQuery = sqlstring.escape(req.query.task_reward);
   connection.query(`
   SELECT
   pokestops.*,
@@ -62,7 +62,7 @@ app.get('/rewardSearch/', (req, res, next) => {
     tasks.task_date_end_time,
     tasks.id AS task_id,
     CASE
-      WHEN tasks.reward LIKE '%${sqlstring.escape(req.query.task_reward)}%'
+      WHEN tasks.reward LIKE '%${rewardQuery}%'
       THEN 'true'
       ELSE 'false'
       END active
