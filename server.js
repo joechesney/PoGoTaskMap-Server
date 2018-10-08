@@ -40,6 +40,8 @@ app.get('/', (req, res, next) => {
 });
 
 /***** GET POKESTOPS ******/
+// -Receives: Nothing
+// -Returns: Array of objects
 // Gets ALL pokestops in the database as well as any associated tasks
 // Attaches associated tasks to the pokestop object before sending it to client
 app.get('/getPokestops', (req, res, next) => {
@@ -66,10 +68,12 @@ app.get('/getPokestops', (req, res, next) => {
     });
 });
 
+/***** GET ONE POKESTOP ******/
+// -Receives: Request Parameter of pokestop_id
+// -Returns: Array of object(s). Should always be just one object.
+// Gets ALL pokestops where the pokestop_id matches row id as well as any associated tasks
+// Attaches associated tasks to the pokestop object before sending it to client
 app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
-  // Getting the pokestops also gets the active tasks and gives the pokestops
-  // the relationship with the task and also the property on the same object
-
   connection.query(`
   SELECT
   pokestops.*,
@@ -89,9 +93,8 @@ app.get('/getOnePokestop/:pokestop_id', (req, res, next) => {
   AND tasks.task_date_end_time > (NOW() - INTERVAL 5 HOUR)
   WHERE pokestops.id = ${req.params.pokestop_id}
   `, (err, result) => {
-      if (err) {
-        next(err);
-      } else {
+      if (err) next(err);
+      else {
         res.send({
           pokestop: result,
           serverStatus: 200
