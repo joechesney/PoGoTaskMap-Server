@@ -208,7 +208,7 @@ app.post('/addNewPokestop', (req, res, next) => {
       req.body.latitude > northmostLocation[0] ||
       req.body.longitude < westmostLocation[1] ||
       req.body.longitude > eastmostLocation[1]) {
-    res.send(new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a location in middle TN."));
+    res.next(new Error("That pokestop is not in middle TN. Double check your lat/long values, or please choose a location in middle TN."));
   } else {
     const pokestopName = escape(req.body.name)
     const sql = `
@@ -264,7 +264,7 @@ app.post('/changeRequest', (req, res, next) => {
 
 // Error handler
 app.use((err, req, res) => {
-  if (err) res.json({ error: err, request: req });
+  res.json({ error: err, request: req });
 });
 
 app.listen(process.env.PORT, () => {
