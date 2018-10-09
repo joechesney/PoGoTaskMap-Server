@@ -282,6 +282,34 @@ app.post('/changeRequest', (req, res, next) => {
 });
 
 
+/***** REPORTED POKESTOP OR TASK (POST) ******/
+// -Receives: Object with 3 properties: userEmail (string), reportedId (string)
+// -Returns: Request status
+// -SQL: None
+// Sends Site owner an email with reported Pokestop and/or task information with database ids
+app.post('/report/:task_or_pokestop', (req, res, next) => {
+  // This endpoint will send me an email with any reported task or pokestop
+  const entry = req.params.task_or_pokestop;
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: `${process.env.EMAIL_DESTINATION}`,
+      pass: `${process.env.EMAIL_KEY}`
+    }
+  });
+  const mailOptions = {
+    from: `${req.body.userEmail}`,
+    to: `${process.env.EMAIL_DESTINATION}`,
+    subject: `REPORTED ${entry}`,
+    html: `Report received for ${entry} with id ${req.body.entry_id},<br>`
+  };
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) next(err);
+    else res.send(info);
+  });
+});
+
+
 // Error handler
 app.use((err, req, res) => {
   res.json({ error: err, request: req });
