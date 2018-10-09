@@ -7,12 +7,17 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 const { escape } = require('sqlstring');
 
+
+
+/*************************************/
+/***** MySQL Database Connection *****/
+/*************************************/
+
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PW,
   database: process.env.DB_DATABASE_NAME,
-  // insecureAuth: true
 });
 
 connection.connect((err) => {
@@ -20,9 +25,13 @@ connection.connect((err) => {
   console.log('Connected!');
 });
 
+
+
+/*******************************/
+/***** Node/Express Server *****/
+/*******************************/
+
 const app = express();
-// app.options('*', cors());
-// app.use(cors());
 
 // CORS use route
 app.use(function(req, res, next) {
@@ -53,6 +62,11 @@ app.get('/', (req, res, next) => {
     "this site is available at": "https://pogotaskmap.firebaseapp.com" });
 });
 
+
+
+/*************************/
+/***** Server Routes *****/
+/*************************/
 
 /***** GET POKESTOPS (GET) ******/
 // -Receives: Nothing
@@ -188,6 +202,7 @@ app.post('/addTask/:pokestop_id', (req, res, next) => {
   });
 });
 
+
 /***** ADD POKESTOP (POST) ******/
 // -Receives: Object with 3 properties: name (string), latitude (float), longitude (float)
 // -Returns: Object with 3 properties: MySQL insertId (integer), ServerStatus (string), pokestopId (integer)
@@ -208,7 +223,7 @@ app.post('/addNewPokestop', (req, res, next) => {
       req.body.latitude > northmostLocation[0] ||
       req.body.longitude < westmostLocation[1] ||
       req.body.longitude > eastmostLocation[1]) {
-    let boundaryError = new Error();
+    let boundaryError = new Error(); // this isn't working how I want it to yet
     boundaryError.statusText = "That pokestop is not in middle TN. Double check your lat/long values, or please choose a location in middle TN.";
     boundaryError.statusCode = 400;
     res.next(boundaryError);
@@ -234,6 +249,7 @@ app.post('/addNewPokestop', (req, res, next) => {
     });
   }
 });
+
 
 /***** CHANGE REQUEST (POST) ******/
 // -Receives: Object with 3 properties: userEmail (string), changesRequested (string)
@@ -264,6 +280,7 @@ app.post('/changeRequest', (req, res, next) => {
     else res.send(info);
   });
 });
+
 
 // Error handler
 app.use((err, req, res) => {
