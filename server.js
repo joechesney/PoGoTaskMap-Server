@@ -283,13 +283,12 @@ app.post('/changeRequest', (req, res, next) => {
 
 
 /***** REPORTED POKESTOP OR TASK (POST) ******/
-// -Receives: Object with 3 properties: userEmail (string), reportedId (string)
+// -Receives: Object with 3 properties: entry_type (string), entry_id (integer)
 // -Returns: Request status
 // -SQL: None
 // Sends Site owner an email with reported Pokestop and/or task information with database ids
-app.post('/report/:task_or_pokestop', (req, res, next) => {
+app.post('/report/:entry_type', (req, res, next) => {
   // This endpoint will send me an email with any reported task or pokestop
-  const entry = req.params.task_or_pokestop;
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -300,8 +299,8 @@ app.post('/report/:task_or_pokestop', (req, res, next) => {
   const mailOptions = {
     from: `${process.env.EMAIL_DESTINATION}`,
     to: `${process.env.EMAIL_DESTINATION}`,
-    subject: `REPORTED ${entry}`,
-    html: `Report received for ${entry} with id ${req.body.entry_id},<br>`
+    subject: `REPORTED ${req.params.entry_type}`,
+    html: `Report received for ${req.params.entry_type} with id ${req.body.entry_id},<br>`
   };
   transporter.sendMail(mailOptions, function (err, info) {
     if (err) next(err);
