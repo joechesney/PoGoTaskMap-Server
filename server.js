@@ -298,7 +298,7 @@ app.post('/report/:task_or_pokestop', (req, res, next) => {
     }
   });
   const mailOptions = {
-    from: `${req.body.userEmail}`,
+    from: `${process.env.EMAIL_DESTINATION}`,
     to: `${process.env.EMAIL_DESTINATION}`,
     subject: `REPORTED ${entry}`,
     html: `Report received for ${entry} with id ${req.body.entry_id},<br>`
